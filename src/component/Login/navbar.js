@@ -25,7 +25,7 @@ export class Navbar extends Component {
               <span className="navbar-toggler-icon icon-bar"></span>
               <span className="navbar-toggler-icon icon-bar"></span>
             </button>
-            <div className="collapse navbar-collapse justify-content-end">
+            {/* <div className="collapse navbar-collapse justify-content-end">
               <ul className="navbar-nav">
                 <li className="nav-item">
                   <Link to="/dashboard" className="nav-link">
@@ -53,6 +53,7 @@ export class Navbar extends Component {
                 </li>
               </ul>
             </div>
+           */}
           </div>
         </nav>
       </div>

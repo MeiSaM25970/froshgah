@@ -12,3 +12,15 @@ export function uploadImage(img) {
 export function fetchProduct() {
   return axios.get(API_ADDRESS_SERVICE + "products");
 }
+
+export function register(userInfo) {
+  return axios.post(API_ADDRESS_SERVICE + "auth/register", userInfo, {
+    headers: {
+      Authorization: "Bearer " + userInfo.token,
+    },
+  });
+}
+
+export function login(userInfo) {
+  return axios.post(API_ADDRESS_SERVICE + "auth/login", userInfo);
+}

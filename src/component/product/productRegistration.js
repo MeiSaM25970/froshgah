@@ -13,6 +13,11 @@ export class ProductRegistration extends Component {
     newProduct: "",
     price: "",
     description: ``,
+    des1: "",
+    des2: "",
+    des3: "",
+    des4: "",
+    des5: "",
     productError: false,
     priceError: false,
     imgError: false,
@@ -21,9 +26,15 @@ export class ProductRegistration extends Component {
     imageUpload: false,
     imgPath: "",
     isDone: false,
+    des1Err: false,
+    des2Err: false,
+    des3Err: false,
+    des4Err: false,
+    des5Err: false,
   };
   dangerClassName = "form-group bmd-form-group has-danger is-focused";
   normalClassName = "form-group bmd-form-group";
+  featureClass = "col-sm-12 col-md-6 col-lg-4 ";
   submitHandler = async (e) => {
     await e.preventDefault();
     await this.inputValidation();
@@ -31,7 +42,12 @@ export class ProductRegistration extends Component {
       !this.state.productError &&
       !this.state.priceError &&
       !this.state.imgError &&
-      !this.state.descriptionError
+      !this.state.descriptionError &&
+      !this.state.des1Err &&
+      !this.state.des2Err &&
+      !this.state.des3Err &&
+      !this.state.des4Err &&
+      !this.state.des5Err
     ) {
       await this.setState({ isValid: true });
       await this.uploadFile();
@@ -40,10 +56,21 @@ export class ProductRegistration extends Component {
         price: this.state.price,
         description: this.state.description,
         img: this.state.imgPath,
+        feature1: this.state.des1,
+        feature2: this.state.des2,
+        feature3: this.state.des3,
+        feature4: this.state.des4,
+        feature5: this.state.des5,
       };
       userService
         .createProduct(product)
-        .then(window.location.replace("/successproduct"))
+        .then((res) => {
+          if (res.status == 200) {
+            window.location.replace("/successproduct");
+          } else {
+            console.log("fail");
+          }
+        })
         .catch(this.setState({ isDone: false }));
     } else await this.setState({ isValid: false });
     if (!this.state.isValid) {
@@ -93,6 +120,11 @@ export class ProductRegistration extends Component {
     const product = await validator.isEmpty(this.state.newProduct);
     const price = await validator.isEmpty(this.state.price);
     const description = await validator.isEmpty(this.state.description);
+    const des1 = await validator.isEmpty(this.state.des1);
+    const des2 = await validator.isEmpty(this.state.des2);
+    const des3 = await validator.isEmpty(this.state.des3);
+    const des4 = await validator.isEmpty(this.state.des4);
+    const des5 = await validator.isEmpty(this.state.des5);
     if (product) {
       await this.setState({ productError: true });
     } else await this.setState({ productError: false });
@@ -102,6 +134,21 @@ export class ProductRegistration extends Component {
     if (description) {
       await await this.setState({ descriptionError: true });
     } else await this.setState({ descriptionError: false });
+    if (des1) {
+      await await this.setState({ des1Err: true });
+    } else await this.setState({ des1Err: false });
+    if (des2) {
+      await await this.setState({ des2Err: true });
+    } else await this.setState({ des2Err: false });
+    if (des3) {
+      await await this.setState({ des3Err: true });
+    } else await this.setState({ des3Err: false });
+    if (des4) {
+      await await this.setState({ des4Err: true });
+    } else await this.setState({ des4Err: false });
+    if (des5) {
+      await await this.setState({ des5Err: true });
+    } else await this.setState({ des5Err: false });
     if (this.state.img.length === 0) {
       await this.setState({ imgError: true });
     } else {
@@ -179,7 +226,9 @@ export class ProductRegistration extends Component {
                 </div>
               </div>
               <div className="row">
-                <label className="col-sm-2 col-form-label">نام محصول</label>
+                <label className="col-sm-2 col-form-label t-r">
+                  نام محصول:
+                </label>
                 <div className="col-sm-10">
                   <div
                     className={
@@ -206,7 +255,103 @@ export class ProductRegistration extends Component {
                 </div>
               </div>
               <div className="row">
-                <label className="col-sm-2 col-form-label">قیمت</label>
+                <label className="col-sm-2 col-form-label t-r">
+                  توضیح کوتاه:
+                </label>
+                <div className="col-sm-10">
+                  <div className="row">
+                    {" "}
+                    <div
+                      className={
+                        this.state.des1Err
+                          ? this.featureClass + this.dangerClassName
+                          : this.featureClass + this.normalClassName
+                      }
+                    >
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder=""
+                        name="des1"
+                        onChange={this.changeHandler.bind(this)}
+                      />
+                    </div>
+                    <div
+                      className={
+                        this.state.des2Err
+                          ? this.featureClass + this.dangerClassName
+                          : this.featureClass + this.normalClassName
+                      }
+                    >
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder=""
+                        name="des2"
+                        onChange={this.changeHandler.bind(this)}
+                      />
+                    </div>
+                    <div
+                      className={
+                        this.state.des3Err
+                          ? this.featureClass + this.dangerClassName
+                          : this.featureClass + this.normalClassName
+                      }
+                    >
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder=""
+                        name="des3"
+                        onChange={this.changeHandler.bind(this)}
+                      />
+                    </div>
+                    <div
+                      className={
+                        this.state.des4Err
+                          ? this.featureClass + this.dangerClassName
+                          : this.featureClass + this.normalClassName
+                      }
+                    >
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder=""
+                        name="des4"
+                        onChange={this.changeHandler.bind(this)}
+                      />
+                    </div>
+                    <div
+                      className={
+                        this.state.des5Err
+                          ? this.featureClass + this.dangerClassName
+                          : this.featureClass + this.normalClassName
+                      }
+                    >
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder=""
+                        name="des5"
+                        onChange={this.changeHandler.bind(this)}
+                      />
+                    </div>
+                  </div>
+                </div>
+                {this.state.des1Err ||
+                this.state.des2Err ||
+                this.state.des3Err ||
+                this.state.des4Err ||
+                this.state.des5Err ? (
+                  <small className="d-block text-danger mx-auto">
+                    توضیح کوتاه اجباری است.
+                  </small>
+                ) : (
+                  ""
+                )}
+              </div>
+              <div className="row">
+                <label className="col-sm-2 col-form-label t-r">قیمت:</label>
                 <div className="col-sm-10">
                   <div
                     className={
@@ -235,7 +380,7 @@ export class ProductRegistration extends Component {
                 </div>
               </div>
               <div className="row">
-                <label className="col-sm-2 col-form-label">توضیحات</label>
+                <label className="col-sm-2 col-form-label t-r">توضیحات:</label>
                 <div className="col-sm-10">
                   <div
                     className={

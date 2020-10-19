@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import "./App.css";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import Page from "./component/pageTitle/pageTitle";
@@ -9,74 +9,127 @@ import { DashboardPage } from "./pages/dashboard";
 import { ProductPage } from "./pages/productPage";
 import { ProductRegisterPage } from "./pages/productRegister";
 import { SuccessDone } from "./component/product/success";
+import { ErrorPage } from "./pages/ErrorPage2";
 
-function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <Switch>
-          <Route path="/" exact>
-            <HomePage />
-          </Route>
-          <Route
-            path="/login"
-            exact
-            render={(props) => (
-              <Page title="ورود">
-                <Login {...props} />
-              </Page>
-            )}
-          />
-          <Route
-            path="/product"
-            exact
-            render={(props) => (
-              <Page title="محصولات">
-                <ProductPage {...props} />
-              </Page>
-            )}
-          />
-          <Route
-            path="/productregister"
-            exact
-            render={(props) => (
-              <Page title="ثبت محصول">
-                <ProductRegisterPage {...props} />
-              </Page>
-            )}
-          />
-          <Route
-            path="/register"
-            exact
-            render={(props) => (
-              <Page title="عضویت">
-                <Register {...props} />
-              </Page>
-            )}
-          />
-          <Route
-            path="/successproduct"
-            exact
-            render={(props) => (
-              <Page title="ثبت موفق">
-                <SuccessDone {...props} />
-              </Page>
-            )}
-          />
-          <Route
-            path="/dashboard"
-            exact
-            render={(props) => (
-              <Page title="داشبورد">
-                <DashboardPage {...props} />
-              </Page>
-            )}
-          />
-          <Redirect to="/" />
-        </Switch>
-      </BrowserRouter>
-    </div>
-  );
+class App extends Component {
+  state = { userInfo: {} };
+  componentDidMount() {
+    this.userIsLogin();
+  }
+  userInfo =
+    localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo");
+  userIsLogin() {
+    if (this.userInfo) {
+      this.setState({ userInfo: JSON.parse(this.userInfo) });
+    }
+  }
+  render() {
+    return this.userInfo ? (
+      <div className="App">
+        <BrowserRouter>
+          <Switch>
+            <Route path="/" exact>
+              <HomePage />
+            </Route>
+            <Route
+              path="/login"
+              exact
+              render={(props) => (
+                <Page title="ورود">
+                  <Login {...props} />
+                </Page>
+              )}
+            />
+            <Route
+              path="/product"
+              exact
+              render={(props) => (
+                <Page title="محصولات">
+                  <ProductPage {...props} />
+                </Page>
+              )}
+            />
+            <Route
+              path="/productregister"
+              exact
+              render={(props) => (
+                <Page title="ثبت محصول">
+                  <ProductRegisterPage {...props} />
+                </Page>
+              )}
+            />
+            <Route
+              path="/register"
+              exact
+              render={(props) => (
+                <Page title="عضویت">
+                  <Register {...props} />
+                </Page>
+              )}
+            />
+            <Route
+              path="/successproduct"
+              exact
+              render={(props) => (
+                <Page title="ثبت موفق">
+                  <SuccessDone {...props} />
+                </Page>
+              )}
+            />
+            <Route
+              path="/dashboard"
+              exact
+              render={(props) => (
+                <Page title="داشبورد">
+                  <DashboardPage {...props} />
+                </Page>
+              )}
+            />
+            <Route
+              path="/error"
+              exact
+              render={(props) => (
+                <Page title="خطای اتصال به سرور">
+                  <ErrorPage {...props} />
+                </Page>
+              )}
+            />
+            <Redirect to="/" />
+          </Switch>
+        </BrowserRouter>
+      </div>
+    ) : (
+      <div className="App">
+        <BrowserRouter>
+          <Switch>
+            <Route path="/" exact>
+              <HomePage />
+            </Route>
+            <Route
+              path="/login"
+              exact
+              render={(props) => (
+                <Page title="ورود">
+                  <Login {...props} />
+                </Page>
+              )}
+            />
+            <Route
+              path="/error"
+              exact
+              render={(props) => (
+                <Page title="خطای اتصال به سرور">
+                  <ErrorPage {...props} />
+                </Page>
+              )}
+            />
+
+            <Redirect to="/login" />
+          </Switch>
+        </BrowserRouter>
+      </div>
+    );
+  }
 }
 
 export default App;

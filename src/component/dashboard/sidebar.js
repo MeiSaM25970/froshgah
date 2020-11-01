@@ -10,15 +10,15 @@ export const SideBar = () => {
       data-image="../assets/img/sidebar-1.jpg"
     >
       <div className="logo">
-        {/* <a href="http://www.creative-tim.com" className="simple-text logo-mini">
+        <a href="http://www.creative-tim.com" className="simple-text logo-mini">
           CT
-        </a> */}
-        {/* <a
+        </a>
+        <a
           href="http://www.creative-tim.com"
           className="simple-text logo-normal"
         >
           Creative Tim
-        </a> */}
+        </a>
       </div>
       <div className="sidebar-wrapper ps ps--active-y">
         <div className="user">
@@ -40,19 +40,19 @@ export const SideBar = () => {
               <ul className="nav">
                 <li className="nav-item">
                   <a className="nav-link" href="#">
-                    {/* <span className="sidebar-mini"> MP </span> */}
+                    <span className="sidebar-mini"> MP </span>
                     <span className="sidebar-normal"> پروفایل من </span>
                   </a>
                 </li>
                 <li className="nav-item">
                   <a className="nav-link" href="#">
-                    {/* <span className="sidebar-mini"> EP </span> */}
+                    <span className="sidebar-mini"> EP </span>
                     <span className="sidebar-normal"> ویرایش پروفایل </span>
                   </a>
                 </li>
                 <li className="nav-item">
                   <a className="nav-link" href="#">
-                    {/* <span className="sidebar-mini"> S </span> */}
+                    <span className="sidebar-mini"> S </span>
                     <span className="sidebar-normal"> تنظیمات </span>
                   </a>
                 </li>
@@ -66,6 +66,45 @@ export const SideBar = () => {
               <i className="material-icons">dashboard</i>
               <p> داشبورد </p>
             </Link>
+          </li>
+          <li className="nav-item ">
+            <a
+              className="nav-link collapsed"
+              data-toggle="collapse"
+              href="#mapsExamples"
+              aria-expanded="false"
+            >
+              <i className="material-icons">image</i>
+              <p>
+                {" "}
+                مدیریت صفحات
+                <b className="caret"></b>
+              </p>
+            </a>
+            <div className="collapse" id="mapsExamples">
+              <ul className="nav">
+                <li className="nav-item ">
+                  <Link className="nav-link" to="/manage-product-a-page">
+                    <span className="sidebar-normal"> محصول یک </span>
+                  </Link>
+                </li>
+                <li className="nav-item ">
+                  <a
+                    className="nav-link"
+                    href="../examples/maps/fullscreen.html"
+                  >
+                    <span className="sidebar-mini"> FSM </span>
+                    <span className="sidebar-normal"> Full Screen Map </span>
+                  </a>
+                </li>
+                <li className="nav-item ">
+                  <a className="nav-link" href="../examples/maps/vector.html">
+                    <span className="sidebar-mini"> VM </span>
+                    <span className="sidebar-normal"> Vector Map </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
           </li>
           <li className="nav-item ">
             <a
@@ -117,7 +156,7 @@ export const SideBar = () => {
                     className="nav-link"
                     href="../examples/components/buttons.html"
                   >
-                    {/* <span className="sidebar-mini"> B </span> */}
+                    <span className="sidebar-mini"> B </span>
                     <span className="sidebar-normal"> سفارشات </span>
                   </a>
                 </li>
@@ -126,7 +165,7 @@ export const SideBar = () => {
                     className="nav-link"
                     href="../examples/components/grid.html"
                   >
-                    {/* <span className="sidebar-mini"> GS </span> */}
+                    <span className="sidebar-mini"> GS </span>
                     <span className="sidebar-normal"> پیگیری سفارشات </span>
                   </a>
                 </li>
@@ -200,43 +239,52 @@ export const SideBar = () => {
             </div>
           </li>
         </ul>
-        <div className="ps__rail-x" style={{ left: "0px", top: "0px" }}>
+        <div
+          className="ps__rail-x"
+          // style={{ left: "0px", top: "0px" }}
+        >
           <div
             className="ps__thumb-x"
             tabIndex="0"
-            style={{ left: "0px", width: "0px" }}
+            // style={{ left: "0px", width: "0px" }}
           ></div>
         </div>
         <div
           className="ps__rail-y"
-          style={{ top: "0px", height: "103px", left: "0px" }}
+          // style={{ top: "0px", height: "103px", left: "0px" }}
         >
           <div
             className="ps__thumb-y"
             tabIndex="0"
-            style={{ top: "0px", height: "17px" }}
+            // style={{ top: "0px", height: "17px" }}
           ></div>
         </div>
       </div>
-      <div className="ps__rail-x" style={{ left: "0px", top: "0px" }}>
+      <div
+        className="ps__rail-x"
+        // style={{ left: "0px", top: "0px" }}
+      >
         <div
           className="ps__thumb-x"
           tabIndex="0"
-          style={{ left: "0px", width: "0px" }}
+          // style={{ left: "0px", width: "0px" }}
         ></div>
       </div>
-      <div className="ps__rail-y" style={{ top: "0px", left: "0px" }}>
+      <div
+        className="ps__rail-y"
+        // style={{ top: "0px", left: "0px" }}
+      >
         <div
           className="ps__thumb-y"
           tabIndex="0"
-          style={{ top: "0px", height: "0px" }}
+          // style={{ top: "0px", height: "0px" }}
         ></div>
       </div>
       <div
         className="sidebar-background"
-        style={{
-          backgroundImage: "url(&quot;../assets/img/sidebar-1.jpg&quot)",
-        }}
+        // style={{
+        //   backgroundImage: "url(&quot;../assets/img/sidebar-1.jpg&quot)",
+        // }}
       ></div>
     </div>
   );

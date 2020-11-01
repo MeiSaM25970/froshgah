@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import validator from "validator";
+import { API_ADDRESS_SERVICE } from "../../env";
 import * as userService from "../../service";
-export class ProductRegistration extends Component {
+import Loading from "../loading";
+export class ManageProductAInputForm extends Component {
   constructor(props) {
     super(props);
     this.uploadedImage = React.createRef(null);
@@ -162,7 +164,8 @@ export class ProductRegistration extends Component {
     });
   };
   render() {
-    return (
+    console.log(this.state.data);
+    return this.props.data ? (
       <div className="col-md-12 " style={{ marginTop: 100 }}>
         <div className="card ">
           <div className="card-header card-header-rose card-header-text text-right">
@@ -178,53 +181,11 @@ export class ProductRegistration extends Component {
               autoComplete="off"
               onSubmit={this.submitHandler.bind(this)}
             >
-              <div className="row">
-                <div
-                  style={{
-                    display: "block",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "auto",
-                  }}
-                  className="mx-auto"
-                >
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={this.handleImageUpload.bind(this)}
-                    ref={this.imageUploader}
-                    style={{
-                      display: "none",
-                    }}
-                  />
-                  <div onClick={() => this.imageUploader.current.click()}>
-                    <img
-                      src="/img/uploadImage.png"
-                      ref={this.uploadedImage}
-                      alt="تصویر"
-                      style={{
-                        width: "50%",
-                        maxHeight: 300,
-                        position: "relative",
-                      }}
-                    />
-                  </div>
-                  {this.state.imgError ? (
-                    <div className="mt-3 text-danger text-center">
-                      {"انتخاب تصویر اجباری است."}
-                    </div>
-                  ) : !this.state.imageUpload ? (
-                    <div className="mt-3 text-warning text-center">
-                      {" تصویر خود را انتخاب کنید."}
-                    </div>
-                  ) : (
-                    <div className="text-success mt-3 text-center">
-                      تصویر با موفقیت انتخاب شد.
-                    </div>
-                  )}
-                </div>
-              </div>
+              <img
+                src={API_ADDRESS_SERVICE + this.props.data.img}
+                alt="محصول یک"
+                width="50%"
+              />
               <div className="row">
                 <label className="col-sm-2 col-form-label t-r">
                   نام محصول:
@@ -419,6 +380,8 @@ export class ProductRegistration extends Component {
           </div>
         </div>
       </div>
+    ) : (
+      <Loading />
     );
   }
 }

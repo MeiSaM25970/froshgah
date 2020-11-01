@@ -1,16 +1,9 @@
 import React, { Component, Fragment, useState } from "react";
 import { ProductList } from "../component/product";
 import { SideBar, MainNavbar } from "../component/dashboard";
-import * as userService from "../service";
 
 export class ProductPage extends Component {
-  state = { data: [] };
-  componentDidMount() {
-    this.fetchData();
-  }
-  fetchData() {
-    userService.fetchProduct().then((res) => this.setState({ data: res.data }));
-  }
+  state = {};
 
   render() {
     return (
@@ -26,7 +19,7 @@ export class ProductPage extends Component {
                 <br />
                 <div className="row mt-5">
                   {" "}
-                  <ProductList data={this.state.data} />
+                  <ProductList data={this.props.data} />
                 </div>
               </div>
             </div>

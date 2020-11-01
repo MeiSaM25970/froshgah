@@ -1,27 +1,19 @@
-import React, { Component } from "react";
-import { MainDashboard, SideBar, MainNavbar } from "../component/dashboard";
+import React, { Component, Fragment } from "react";
+import { MainDashboard, MainNavbar } from "../component/dashboard";
+import { SideBar } from "../component/dashboard/sidebar";
 
 export class DashboardPage extends Component {
-  state = { userInfo: {} };
-  componentDidMount() {
-    this.userIsLogin();
-  }
-  userInfo =
-    localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo");
-  userIsLogin() {
-    if (!this.userInfo) {
-      window.location.replace("/login");
-    } else {
-      this.setState({ userInfo: JSON.parse(this.userInfo) });
-    }
-  }
+  state = {};
+
   render() {
     return (
-      <div className="main-panel ps ps--active-y">
+      <Fragment>
         <SideBar />
-        <MainNavbar />
-        <MainDashboard userInfo={this.state.userInfo} />
-      </div>
+        <div className="main-panel ps ps--active-y">
+          <MainNavbar />
+          <MainDashboard userInfo={this.props.userInfo} />
+        </div>
+      </Fragment>
     );
   }
 }

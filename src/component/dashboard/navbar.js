@@ -37,6 +37,7 @@ export const MainNavbar = () => {
           <span className="navbar-toggler-icon icon-bar"></span>
           <span className="navbar-toggler-icon icon-bar"></span>
         </button>
+
         <div className="collapse navbar-collapse justify-content-end">
           {/* <form className="navbar-form">
             <span className="bmd-form-group">

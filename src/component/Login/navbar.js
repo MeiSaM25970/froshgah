@@ -12,7 +12,7 @@ export class Navbar extends Component {
                 صفحه ورود
               </a>
             </div>
-            <button
+            {/* <button
               className="navbar-toggler"
               type="button"
               data-toggle="collapse"
@@ -24,7 +24,7 @@ export class Navbar extends Component {
               <span className="navbar-toggler-icon icon-bar"></span>
               <span className="navbar-toggler-icon icon-bar"></span>
               <span className="navbar-toggler-icon icon-bar"></span>
-            </button>
+            </button> */}
             {/* <div className="collapse navbar-collapse justify-content-end">
               <ul className="navbar-nav">
                 <li className="nav-item">

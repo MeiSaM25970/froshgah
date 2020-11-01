@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./App.css";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import Page from "./component/pageTitle/pageTitle";
-import { HomePage } from "./pages/";
+import { HomePage, ManageProductAPage } from "./pages/";
 import { Login } from "./component/Login";
 import { Register } from "./component/register";
 import { DashboardPage } from "./pages/dashboard";
@@ -10,12 +10,11 @@ import { ProductPage } from "./pages/productPage";
 import { ProductRegisterPage } from "./pages/productRegister";
 import { SuccessDone } from "./component/product/success";
 import { ErrorPage } from "./pages/ErrorPage2";
+import * as userService from "./service";
 
 class App extends Component {
-  state = { userInfo: {} };
-  componentDidMount() {
-    this.userIsLogin();
-  }
+  state = { userInfo: {}, data: [] };
+
   userInfo =
     localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo");
   userIsLogin() {
@@ -23,6 +22,14 @@ class App extends Component {
       this.setState({ userInfo: JSON.parse(this.userInfo) });
     }
   }
+  fetchData() {
+    userService.fetchProduct().then((res) => this.setState({ data: res.data }));
+  }
+  componentDidMount() {
+    this.userIsLogin();
+    this.fetchData();
+  }
+
   render() {
     return this.userInfo ? (
       <div className="App">
@@ -45,7 +52,7 @@ class App extends Component {
               exact
               render={(props) => (
                 <Page title="محصولات">
-                  <ProductPage {...props} />
+                  <ProductPage {...props} data={this.state.data} />
                 </Page>
               )}
             />
@@ -81,7 +88,7 @@ class App extends Component {
               exact
               render={(props) => (
                 <Page title="داشبورد">
-                  <DashboardPage {...props} />
+                  <DashboardPage {...props} userInfo={this.state.userInfo} />
                 </Page>
               )}
             />
@@ -91,6 +98,15 @@ class App extends Component {
               render={(props) => (
                 <Page title="خطای اتصال به سرور">
                   <ErrorPage {...props} />
+                </Page>
+              )}
+            />
+            <Route
+              path="/manage-product-a-page"
+              exact
+              render={(props) => (
+                <Page title="مدیریت صحفه محصول 1">
+                  <ManageProductAPage {...props} data={this.state.data} />
                 </Page>
               )}
             />

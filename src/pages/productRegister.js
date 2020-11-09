@@ -1,13 +1,16 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { MainNavbar, SideBar } from "../component/dashboard";
 import { ProductRegistration } from "../component/product";
 
 export const ProductRegisterPage = () => {
   return (
-    <div className="main-panel ps ps--active-y">
-      <MainNavbar />
+    <Fragment>
       <SideBar />
-      <ProductRegistration />
-    </div>
+      <div className="main-panel ps ps--active-y">
+        <MainNavbar />
+
+        <ProductRegistration />
+      </div>
+    </Fragment>
   );
 };

@@ -105,7 +105,7 @@ class App extends Component {
               path="/manage-product-a-page"
               exact
               render={(props) => (
-                <Page title="مدیریت صحفه محصول 1">
+                <Page title="مدیریت محصول 1">
                   <ManageProductAPage {...props} data={this.state.data} />
                 </Page>
               )}

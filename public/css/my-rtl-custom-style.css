@@ -198,6 +198,9 @@ textarea .form-control {
   }
 }
 @media (max-width: 768px) {
+  .res-none {
+    display: none;
+  }
   .swal-wide {
     width: 95% !important;
     margin-left: -47.5% !important;

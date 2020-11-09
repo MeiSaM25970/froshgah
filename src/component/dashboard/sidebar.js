@@ -67,7 +67,7 @@ export const SideBar = () => {
               <p> داشبورد </p>
             </Link>
           </li>
-          <li className="nav-item ">
+          {/* <li className="nav-item ">
             <a
               className="nav-link collapsed"
               data-toggle="collapse"
@@ -105,7 +105,7 @@ export const SideBar = () => {
                 </li>
               </ul>
             </div>
-          </li>
+          </li> */}
           <li className="nav-item ">
             <a
               className="nav-link collapsed"

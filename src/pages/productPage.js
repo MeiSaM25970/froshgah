@@ -8,8 +8,8 @@ export class ProductPage extends Component {
   render() {
     return (
       <Fragment>
+        <SideBar />
         <div className="main-panel ps ps--active-y">
-          <SideBar />
           <MainNavbar />
 
           <div className="content">

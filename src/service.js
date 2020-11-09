@@ -24,3 +24,6 @@ export function register(userInfo) {
 export function login(userInfo) {
   return axios.post(API_ADDRESS_SERVICE + "auth/login", userInfo);
 }
+export function managePageAFeature(feature) {
+  return axios.post(API_ADDRESS_SERVICE + "manage-page-a", feature);
+}

@@ -20,7 +20,7 @@ export const MainNavbar = () => {
               <div className="ripple-container"></div>
             </button>
           </div>
-          <Link className="navbar-brand" to="#">
+          <Link className="navbar-brand pr-3" to="#">
             داشبورد
           </Link>
         </div>

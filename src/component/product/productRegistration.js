@@ -13,41 +13,33 @@ export class ProductRegistration extends Component {
     newProduct: "",
     price: "",
     description: ``,
-    des1: "",
-    des2: "",
-    des3: "",
-    des4: "",
-    des5: "",
+    featureDesErr: false,
     productError: false,
     priceError: false,
     imgError: false,
     descriptionError: false,
     isValid: false,
     imageUpload: false,
+    titleError: false,
+    count: 1,
+    deleteErr: false,
     imgPath: "",
     isDone: false,
-    des1Err: false,
-    des2Err: false,
-    des3Err: false,
-    des4Err: false,
-    des5Err: false,
   };
   dangerClassName = "form-group bmd-form-group has-danger is-focused";
   normalClassName = "form-group bmd-form-group";
   featureClass = "col-sm-12 col-md-6 col-lg-4 ";
   submitHandler = async (e) => {
     await e.preventDefault();
-    await this.inputValidation();
+    await this.productValidation();
+    await this.featureValidation();
     if (
       !this.state.productError &&
       !this.state.priceError &&
       !this.state.imgError &&
       !this.state.descriptionError &&
-      !this.state.des1Err &&
-      !this.state.des2Err &&
-      !this.state.des3Err &&
-      !this.state.des4Err &&
-      !this.state.des5Err
+      !this.state.featureDesErr &&
+      !this.state.titleError
     ) {
       await this.setState({ isValid: true });
       await this.uploadFile();
@@ -56,11 +48,7 @@ export class ProductRegistration extends Component {
         price: this.state.price,
         description: this.state.description,
         img: this.state.imgPath,
-        feature1: this.state.des1,
-        feature2: this.state.des2,
-        feature3: this.state.des3,
-        feature4: this.state.des4,
-        feature5: this.state.des5,
+        feature: this.feature,
       };
       userService
         .createProduct(product)
@@ -77,7 +65,21 @@ export class ProductRegistration extends Component {
       this.scrollTop();
     }
   };
-
+  feature = [{ title: "", description: `` }];
+  countPlus() {
+    this.feature.push({ title: "", description: `` });
+    this.setState({ count: +this.state.count + 1 });
+  }
+  deleteCount() {
+    if (this.state.count > 1) {
+      let lastArrayNum = this.feature.length - 1;
+      let count = this.feature.splice(lastArrayNum);
+      this.setState({ count: this.state.count - 1 });
+      console.log(count);
+    } else {
+      alert("حداقا باید یک ویژگی وجود داشته باشد.");
+    }
+  }
   changeHandler = (e) => {
     const product = {};
     const name = e.target.name;
@@ -116,15 +118,11 @@ export class ProductRegistration extends Component {
       reader.readAsDataURL(file);
     }
   };
-  inputValidation = async () => {
+  productValidation = async () => {
     const product = await validator.isEmpty(this.state.newProduct);
     const price = await validator.isEmpty(this.state.price);
     const description = await validator.isEmpty(this.state.description);
-    const des1 = await validator.isEmpty(this.state.des1);
-    const des2 = await validator.isEmpty(this.state.des2);
-    const des3 = await validator.isEmpty(this.state.des3);
-    const des4 = await validator.isEmpty(this.state.des4);
-    const des5 = await validator.isEmpty(this.state.des5);
+
     if (product) {
       await this.setState({ productError: true });
     } else await this.setState({ productError: false });
@@ -134,25 +132,22 @@ export class ProductRegistration extends Component {
     if (description) {
       await await this.setState({ descriptionError: true });
     } else await this.setState({ descriptionError: false });
-    if (des1) {
-      await await this.setState({ des1Err: true });
-    } else await this.setState({ des1Err: false });
-    if (des2) {
-      await await this.setState({ des2Err: true });
-    } else await this.setState({ des2Err: false });
-    if (des3) {
-      await await this.setState({ des3Err: true });
-    } else await this.setState({ des3Err: false });
-    if (des4) {
-      await await this.setState({ des4Err: true });
-    } else await this.setState({ des4Err: false });
-    if (des5) {
-      await await this.setState({ des5Err: true });
-    } else await this.setState({ des5Err: false });
     if (this.state.img.length === 0) {
       await this.setState({ imgError: true });
     } else {
       await this.setState({ imgError: false });
+    }
+  };
+  featureValidation = async () => {
+    for (var i = 0; i < this.feature.length; i++) {
+      const title = await validator.isEmpty(this.feature[i].title);
+      const description = await validator.isEmpty(this.feature[i].description);
+      if (title) {
+        await this.setState({ titleError: true });
+      } else await this.setState({ titleError: false });
+      if (description) {
+        await await this.setState({ featureDesErr: true });
+      } else await this.setState({ featureDesErr: false });
     }
   };
   scrollTop = () => {
@@ -202,6 +197,7 @@ export class ProductRegistration extends Component {
                     <img
                       src="/img/uploadImage.png"
                       ref={this.uploadedImage}
+                      className="mx-auto d-block"
                       alt="تصویر"
                       style={{
                         width: "50%",
@@ -254,102 +250,80 @@ export class ProductRegistration extends Component {
                   </div>
                 </div>
               </div>
-              <div className="row">
+
+              <div className="row ">
                 <label className="col-sm-2 col-form-label t-r">
-                  توضیح کوتاه:
+                  {" "}
+                  ویژگی محصول:
                 </label>
-                <div className="col-sm-10">
-                  <div className="row">
-                    {" "}
-                    <div
-                      className={
-                        this.state.des1Err
-                          ? this.featureClass + this.dangerClassName
-                          : this.featureClass + this.normalClassName
-                      }
-                    >
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder=""
-                        name="des1"
-                        onChange={this.changeHandler.bind(this)}
-                      />
-                    </div>
-                    <div
-                      className={
-                        this.state.des2Err
-                          ? this.featureClass + this.dangerClassName
-                          : this.featureClass + this.normalClassName
-                      }
-                    >
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder=""
-                        name="des2"
-                        onChange={this.changeHandler.bind(this)}
-                      />
-                    </div>
-                    <div
-                      className={
-                        this.state.des3Err
-                          ? this.featureClass + this.dangerClassName
-                          : this.featureClass + this.normalClassName
-                      }
-                    >
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder=""
-                        name="des3"
-                        onChange={this.changeHandler.bind(this)}
-                      />
-                    </div>
-                    <div
-                      className={
-                        this.state.des4Err
-                          ? this.featureClass + this.dangerClassName
-                          : this.featureClass + this.normalClassName
-                      }
-                    >
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder=""
-                        name="des4"
-                        onChange={this.changeHandler.bind(this)}
-                      />
-                    </div>
-                    <div
-                      className={
-                        this.state.des5Err
-                          ? this.featureClass + this.dangerClassName
-                          : this.featureClass + this.normalClassName
-                      }
-                    >
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder=""
-                        name="des5"
-                        onChange={this.changeHandler.bind(this)}
-                      />
-                    </div>
+                <div className="col-sm-10 mt-5">
+                  <div className="row mb-5">
+                    {this.feature.map((item, index) => (
+                      <div className={this.featureClass + " mt-4"} key={index}>
+                        <label
+                          className={
+                            this.state.titleError
+                              ? this.dangerClassName + " title-feature"
+                              : this.normalClassName + " title-feature"
+                          }
+                        >
+                          {` عنوان ${index + 1}:`}
+                        </label>
+                        <input
+                          type="text"
+                          className={"form-control input-feature"}
+                          placeholder=""
+                          name={"title" + (index + 1)}
+                          onChange={(e) => {
+                            let change = e.target.value;
+                            item.title = change;
+                          }}
+                        />
+                        <label className="des-feature1">شرح: </label>
+                        <textarea
+                          rows="2"
+                          type="text"
+                          className="form-control input-feature"
+                          placeholder=""
+                          name={"des" + (index + 1)}
+                          onChange={(e) => {
+                            let change = e.target.value;
+                            item.description = change;
+                          }}
+                        />
+                      </div>
+                    ))}
                   </div>
+                  <span
+                    className="btn btn-primary"
+                    onClick={() => this.countPlus()}
+                  >
+                    ویژگی جدید
+                  </span>
+                  <span
+                    className="btn btn-danger"
+                    onClick={() => this.deleteCount()}
+                  >
+                    حذف{" "}
+                  </span>
+                  {this.state.titleError && this.state.featureDesErr ? (
+                    <small className="d-block text-danger ">
+                      فیلدها را نمی توان خالی گذاشت.
+                    </small>
+                  ) : this.state.titleError ? (
+                    <small className="d-block text-danger ">
+                      عنوان ویژگی اجباریست.
+                    </small>
+                  ) : this.state.featureDesErr ? (
+                    <small className="d-block text-danger ">
+                      شرح ویژگی اجباریست.
+                    </small>
+                  ) : (
+                    ""
+                  )}
                 </div>
-                {this.state.des1Err ||
-                this.state.des2Err ||
-                this.state.des3Err ||
-                this.state.des4Err ||
-                this.state.des5Err ? (
-                  <small className="d-block text-danger mx-auto">
-                    توضیح کوتاه اجباری است.
-                  </small>
-                ) : (
-                  ""
-                )}
               </div>
+
               <div className="row">
                 <label className="col-sm-2 col-form-label t-r">قیمت:</label>
                 <div className="col-sm-10">

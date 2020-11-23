@@ -3,7 +3,8 @@ import * as userService from "../../service";
 import validator from "validator";
 import { Navbar } from "./navbar";
 import Loading from "../loading";
-
+import { Redirect } from "react-router-dom";
+import { loginUser, loginUserStore } from "./redux";
 export class Login extends Component {
   state = {
     username: "",
@@ -15,7 +16,10 @@ export class Login extends Component {
     usernameWrong: false,
     remember: false,
     loading: false,
+    redirect: false,
   };
+  userInfo =
+    localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo");
 
   changeHandler(e) {
     const userInfo = {};
@@ -38,14 +42,25 @@ export class Login extends Component {
 
       await userService
         .login(userInfo)
-        .then((response) => {
+        .then(async (response) => {
           this.setState({ loading: false });
           if (this.state.remember) {
-            localStorage.setItem("userInfo", JSON.stringify(response.data));
+            await localStorage.setItem(
+              "userInfo",
+              JSON.stringify(response.data)
+            );
+            await loginUserStore.dispatch(loginUser(response.data));
+
+            await this.setState({ redirect: true });
           } else {
-            sessionStorage.setItem("userInfo", JSON.stringify(response.data));
+            await sessionStorage.setItem(
+              "userInfo",
+              JSON.stringify(response.data)
+            );
+            await loginUserStore.dispatch(loginUser(response.data));
+
+            await this.setState({ redirect: true });
           }
-          window.location.replace("/dashboard");
         })
         .catch((error) => {
           if (error.response) {
@@ -58,7 +73,6 @@ export class Login extends Component {
               this.setState({ loading: false });
             }
           } else {
-            window.location.href = "/error";
           }
         });
     } else {
@@ -78,157 +92,165 @@ export class Login extends Component {
     } else await this.setState({ passwordIsEmpty: false });
   }
   render() {
-    return (
-      <Fragment>
-        <Navbar />
-        <div className="wrapper wrapper-full-page">
-          <div
-            className="page-header login-page header-filter"
-            filter-color="black"
-            style={{
-              backgroundImage: " url('/img/01.jpg')",
-              backgroundSize: "cover",
-              backgroundPosition: "top center",
-            }}
-          >
-            <div className="container">
-              <div className="row">
-                <div className="col-lg-4 col-md-6 col-sm-8 mx-auto my-auto">
-                  <form
-                    className="form "
-                    method=""
-                    action=""
-                    onSubmit={this.submitHandler.bind(this)}
-                  >
-                    <div className="card card-login">
-                      <div className="card-header card-header-rose text-center">
-                        <h4 className="card-title">ورود</h4>
-                      </div>
-                      <div className="card-body pr-2 pl-4">
-                        <span className="bmd-form-group">
-                          <div className="input-group">
-                            <div className="input-group-prepend">
-                              <span className="input-group-text">
-                                <i className="material-icons">email</i>
-                              </span>
+    if (this.state.redirect || this.userInfo) {
+      return <Redirect to="/dashboard" />;
+    } else {
+      return (
+        <Fragment>
+          <Navbar />
+          <div className="wrapper wrapper-full-page">
+            <div
+              className="page-header login-page header-filter"
+              filter-color="black"
+              style={{
+                backgroundImage: " url('/img/01.jpg')",
+                backgroundSize: "cover",
+                backgroundPosition: "top center",
+              }}
+            >
+              <div className="container">
+                <div className="row">
+                  <div className="col-lg-4 col-md-6 col-sm-8 mx-auto my-auto">
+                    <form
+                      className="form "
+                      method=""
+                      action=""
+                      onSubmit={this.submitHandler.bind(this)}
+                    >
+                      <div className="card card-login">
+                        <div className="card-header card-header-rose text-center">
+                          <h4 className="card-title">ورود</h4>
+                        </div>
+                        <div className="card-body pr-2 pl-4">
+                          <span className="bmd-form-group">
+                            <div className="input-group">
+                              <div className="input-group-prepend">
+                                <span className="input-group-text">
+                                  <i className="material-icons">
+                                    phonelink_ring
+                                  </i>
+                                </span>
+                              </div>
+                              <input
+                                type="text"
+                                className="form-control"
+                                placeholder="mobile"
+                                name="username"
+                                onChange={this.changeHandler.bind(this)}
+                              />
                             </div>
-                            <input
-                              type="text"
-                              className="form-control"
-                              placeholder="username"
-                              name="username"
-                              onChange={this.changeHandler.bind(this)}
-                            />
-                          </div>
-                          {this.state.usernameIsEmpty ? (
-                            <small className="d-block text-danger text-center">
-                              نام کاربری اجباری است.
-                            </small>
-                          ) : (
-                            ""
-                          )}
-                        </span>
-                        <span className="bmd-form-group">
-                          <div className="input-group">
-                            <div className="input-group-prepend">
-                              <span className="input-group-text">
-                                <i className="material-icons">lock_outline</i>
-                              </span>
-                            </div>
-                            <input
-                              type="password"
-                              className="form-control"
-                              placeholder="کلمه عبور"
-                              name="password"
-                              onChange={this.changeHandler.bind(this)}
-                            />
-                          </div>
-                          {this.state.passwordIsEmpty ? (
-                            <small className="d-block text-danger text-center">
-                              کلمه عبور اجباری است.
-                            </small>
-                          ) : (
-                            ""
-                          )}
-                        </span>
-                      </div>
-                      <div className="form-check d-block text-right">
-                        <label className="form-check-label">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            name="remember"
-                            onClick={() =>
-                              this.setState({ remember: !this.state.remember })
-                            }
-                          />
-                          <span className="form-check-sign">
-                            <span className="check"></span>
+                            {this.state.usernameIsEmpty ? (
+                              <small className="d-block text-danger text-center">
+                                نام کاربری اجباری است.
+                              </small>
+                            ) : (
+                              ""
+                            )}
                           </span>
-                        </label>
-                        <div
-                          className="d-block"
-                          style={{
-                            position: "absolute",
-                            right: "60px",
-                            top: "10px",
-                          }}
-                        >
-                          {" من را بخاطر بسپار"}
+                          <span className="bmd-form-group">
+                            <div className="input-group">
+                              <div className="input-group-prepend">
+                                <span className="input-group-text">
+                                  <i className="material-icons">lock_outline</i>
+                                </span>
+                              </div>
+                              <input
+                                type="password"
+                                className="form-control"
+                                placeholder="کلمه عبور"
+                                name="password"
+                                onChange={this.changeHandler.bind(this)}
+                              />
+                            </div>
+                            {this.state.passwordIsEmpty ? (
+                              <small className="d-block text-danger text-center">
+                                کلمه عبور اجباری است.
+                              </small>
+                            ) : (
+                              ""
+                            )}
+                          </span>
+                        </div>
+                        <div className="form-check d-block text-right">
+                          <label className="form-check-label">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              name="remember"
+                              onClick={() =>
+                                this.setState({
+                                  remember: !this.state.remember,
+                                })
+                              }
+                            />
+                            <span className="form-check-sign">
+                              <span className="check"></span>
+                            </span>
+                          </label>
+                          <div
+                            className="d-block"
+                            style={{
+                              position: "absolute",
+                              right: "60px",
+                              top: "10px",
+                            }}
+                          >
+                            {" من را بخاطر بسپار"}
+                          </div>
+                        </div>
+                        {this.state.usernameWrong ? (
+                          <small className="d-block text-danger text-center">
+                            نام کاربری ثبت نشده است.
+                          </small>
+                        ) : this.state.passwordWrong ? (
+                          <small className="d-block text-danger text-center">
+                            کلمه عبور اشتباه است.
+                          </small>
+                        ) : (
+                          ""
+                        )}
+                        <div className="card-footer justify-content-center">
+                          <button
+                            disabled={this.state.loading}
+                            type="submit"
+                            className="btn btn-rose btn-link btn-lg"
+                          >
+                            {this.state.loading ? <Loading /> : "ورود"}
+                          </button>
                         </div>
                       </div>
-                      {this.state.usernameWrong ? (
-                        <small className="d-block text-danger text-center">
-                          نام کاربری ثبت نشده است.
-                        </small>
-                      ) : this.state.passwordWrong ? (
-                        <small className="d-block text-danger text-center">
-                          کلمه عبور اشتباه است.
-                        </small>
-                      ) : (
-                        ""
-                      )}
-                      <div className="card-footer justify-content-center">
-                        <button
-                          disabled={this.state.loading}
-                          type="submit"
-                          className="btn btn-rose btn-link btn-lg"
-                        >
-                          {this.state.loading ? <Loading /> : "ورود"}
-                        </button>
-                      </div>
-                    </div>
-                  </form>
+                    </form>
+                  </div>
                 </div>
               </div>
+              <footer className="footer">
+                <div className="container">
+                  <nav className="float-left">
+                    <ul></ul>
+                  </nav>
+                  <div className="copyright float-right">
+                    <a
+                      href="http://tad-group.ir"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {" طراحی وب سایت"}{" "}
+                    </a>
+                    {" توسط گروه"}{" "}
+                    <a
+                      href="http://tad-group.ir"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {"تاد  "}{" "}
+                    </a>
+                  </div>
+                </div>
+              </footer>
             </div>
-            <footer className="footer">
-              <div className="container">
-                <nav className="float-left">
-                  <ul></ul>
-                </nav>
-                <div className="copyright float-right">
-                  <a
-                    href="http://tad-group.ir"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {" طراحی وب سایت"}{" "}
-                  </a>
-                  {" توسط گروه"}{" "}
-                  <a
-                    href="http://tad-group.ir"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {"تاد  "}{" "}
-                  </a>
-                </div>
-              </div>
-            </footer>
           </div>
-        </div>
-      </Fragment>
-    );
+        </Fragment>
+      );
+    }
   }
 }

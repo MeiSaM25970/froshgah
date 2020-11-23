@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import validator from "validator";
 import { API_ADDRESS_SERVICE } from "../../env";
-import * as userService from "../../service";
 import Loading from "../loading";
 
 export class ManageProductAInputForm extends Component {
@@ -35,9 +34,9 @@ export class ManageProductAInputForm extends Component {
     await e.preventDefault();
     console.log(this.state, this.inputCount);
     await this.inputValidation();
-    userService
-      .managePageAFeature(this.inputCount)
-      .then((res) => this.setState({ isDone: true }));
+    // userService
+    //   .managePageAFeature(this.inputCount)
+    //   .then((res) => this.setState({ isDone: true }));
     // if (
     //   !this.state.productError &&
     //   !this.state.priceError &&

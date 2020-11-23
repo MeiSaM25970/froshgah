@@ -6,7 +6,7 @@ export class Navbar extends Component {
     return (
       <div className="off-canvas-sidebar">
         <nav className="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top text-white">
-          <div className="container">
+          <div className="container" dir="ltr">
             <div className="navbar-wrapper">
               <a className="navbar-brand" href="/login">
                 صفحه ورود

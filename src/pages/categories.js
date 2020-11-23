@@ -1,9 +1,9 @@
 import React, { Fragment } from "react";
 import { useHistory } from "react-router-dom";
+import { Categories } from "../component/categories";
 import { MainNavbar, SideBar } from "../component/dashboard";
-import { ProductRegistration } from "../component/product";
 
-export const ProductRegisterPage = (props) => {
+export const CategoriesPage = (props) => {
   const history = useHistory();
   return (
     <Fragment>
@@ -11,7 +11,7 @@ export const ProductRegisterPage = (props) => {
       <div className="main-panel ps ps--active-y">
         <MainNavbar {...props} />
 
-        <ProductRegistration {...props} history={history} />
+        <Categories {...props} history={history} />
       </div>
     </Fragment>
   );

@@ -1006,7 +1006,7 @@ main#teacher-single {
 .about-us li a,
 .about-us li span,
 .about-us li p {
-  font-family: !isans !important;
+  font-family: isans !important;
   font-size: 14px !important;
 }
 .about-us h3 {

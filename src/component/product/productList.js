@@ -3,19 +3,22 @@ import { Product } from "./product";
 import Loading from "../loading";
 
 export class ProductList extends Component {
+  state = {};
+  componentDidMount() {
+    this.setState({ data: this.props.data });
+  }
+  componentWillReceiveProps(newProps) {
+    this.setState({ data: newProps.data });
+
+    if (this.props.data.length !== newProps.data.length) {
+      this.setState({ newProps: "received" });
+    }
+  }
   render() {
-    // return <div>{console.log(this.props)}</div>;
-    return this.props.data.length === 0 ? (
-      <div className="container text-right">
-        <Loading />
-        <h3 className="text-warning">موارد زیر را بررسی کنید.</h3>
-        <ul>
-          <li>1-حداقل باید یک محصول تعریف نمایید.</li>
-          <li>2-از ارتباط با سرور اطمینان حاصل نمایید.</li>
-        </ul>
-      </div>
+    return !this.state.data ? (
+      <Loading />
     ) : (
-      this.props.data.map((item, index) => <Product item={item} key={index} />)
+      this.state.data.map((item, index) => <Product item={item} key={index} />)
     );
   }
 }

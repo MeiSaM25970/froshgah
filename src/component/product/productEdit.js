@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import validator from "validator";
+import { API_ADDRESS_SERVICE } from "../../env";
 import * as userService from "../../service";
+import Loading from "../loading";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
-export class ProductRegistration extends Component {
+export class ProductEdit extends Component {
   constructor(props) {
     super(props);
     this.uploadedImage = React.createRef(null);
@@ -27,11 +29,30 @@ export class ProductRegistration extends Component {
     deleteErr: false,
     imgPath: "",
     isDone: false,
+    editFeature: false,
+    data: {},
+    feature: [{ title: "", description: `` }],
   };
   dangerClassName = "form-group bmd-form-group has-danger is-focused";
   normalClassName = "form-group bmd-form-group";
   featureClass = "col-sm-12 col-md-6 col-lg-4 ";
-  history = this.props.history;
+  componentDidMount() {
+    const id = this.props.match.params.id;
+    userService
+      .fetchProductById(id)
+      .then(async (res) => {
+        await this.setState({
+          data: res.data,
+          imgPath: res.data.img,
+          count: res.data.feature.length,
+          newProduct: res.data.title,
+          price: res.data.price,
+          description: res.data.description,
+          feature: res.data.feature,
+        });
+      })
+      .catch((error) => console.log(error));
+  }
   submitHandler = async (e) => {
     await e.preventDefault();
     await this.productValidation();
@@ -39,19 +60,20 @@ export class ProductRegistration extends Component {
     if (
       !this.state.productError &&
       !this.state.priceError &&
-      !this.state.imgError &&
       !this.state.descriptionError &&
       !this.state.featureDesErr &&
       !this.state.titleError
     ) {
       await this.setState({ isValid: true });
-      await this.uploadFile();
+      if (this.state.img.length > 0) {
+        await this.uploadFile();
+      }
       const product = {
         title: this.state.newProduct,
         price: this.state.price,
         description: this.state.description,
         img: this.state.imgPath,
-        feature: this.feature,
+        feature: this.state.feature,
       };
       userService
         .createProduct(product)
@@ -69,7 +91,6 @@ export class ProductRegistration extends Component {
                       className="btn btn-success"
                       onClick={() => {
                         onClose();
-                        window.location.replace(`/product`);
                       }}
                     >
                       باشه
@@ -82,21 +103,21 @@ export class ProductRegistration extends Component {
             console.log("fail");
           }
         })
-        .catch(() => this.setState({ isDone: false }));
+        .catch(this.setState({ isDone: false }));
     } else await this.setState({ isValid: false });
     if (!this.state.isValid) {
       this.scrollTop();
     }
   };
-  feature = [{ title: "", description: `` }];
+
   countPlus() {
-    this.feature.push({ title: "", description: `` });
+    this.state.feature.push({ title: "", description: `` });
     this.setState({ count: +this.state.count + 1 });
   }
   deleteCount() {
     if (this.state.count > 1) {
-      let lastArrayNum = this.feature.length - 1;
-      this.feature.splice(lastArrayNum);
+      let lastArrayNum = this.state.feature.length - 1;
+      this.state.feature.splice(lastArrayNum);
       this.setState({ count: this.state.count - 1 });
     } else {
       alert("حداقا باید یک ویژگی وجود داشته باشد.");
@@ -154,16 +175,13 @@ export class ProductRegistration extends Component {
     if (description) {
       await await this.setState({ descriptionError: true });
     } else await this.setState({ descriptionError: false });
-    if (this.state.img.length === 0) {
-      await this.setState({ imgError: true });
-    } else {
-      await this.setState({ imgError: false });
-    }
   };
   featureValidation = async () => {
-    for (var i = 0; i < this.feature.length; i++) {
-      const title = await validator.isEmpty(this.feature[i].title);
-      const description = await validator.isEmpty(this.feature[i].description);
+    for (var i = 0; i < this.state.feature.length; i++) {
+      const title = await validator.isEmpty(this.state.feature[i].title);
+      const description = await validator.isEmpty(
+        this.state.feature[i].description
+      );
       if (title) {
         await this.setState({ titleError: true });
       } else await this.setState({ titleError: false });
@@ -178,9 +196,10 @@ export class ProductRegistration extends Component {
       behavior: "smooth",
     });
   };
+
   render() {
-    return (
-      <div className="col-md-12 ir-r " style={{ marginTop: 100 }}>
+    return this.state.data ? (
+      <div className="col-md-12 " style={{ marginTop: 100 }}>
         <div className="card ">
           <div className="card-header card-header-rose card-header-text text-right">
             <div className="card-text">
@@ -217,7 +236,10 @@ export class ProductRegistration extends Component {
                   />
                   <div onClick={() => this.imageUploader.current.click()}>
                     <img
-                      src="/img/uploadImage.png"
+                      src={
+                        API_ADDRESS_SERVICE + this.state.data.img ||
+                        "/img/uploadImage.png"
+                      }
                       ref={this.uploadedImage}
                       className="mx-auto d-block"
                       alt="تصویر"
@@ -261,6 +283,7 @@ export class ProductRegistration extends Component {
                       placeholder=""
                       name="newProduct"
                       onChange={this.changeHandler.bind(this)}
+                      defaultValue={this.state.data.title}
                     />
                     {this.state.productError ? (
                       <small className="d-block text-danger">
@@ -280,7 +303,7 @@ export class ProductRegistration extends Component {
                 </label>
                 <div className="col-sm-10 mt-5">
                   <div className="row mb-5">
-                    {this.feature.map((item, index) => (
+                    {this.state.feature.map((item, index) => (
                       <div className={this.featureClass + " mt-4"} key={index}>
                         <label
                           className={
@@ -296,6 +319,7 @@ export class ProductRegistration extends Component {
                           className={"form-control input-feature"}
                           placeholder=""
                           name={"title" + (index + 1)}
+                          defaultValue={item.title}
                           onChange={(e) => {
                             let change = e.target.value;
                             item.title = change;
@@ -307,6 +331,7 @@ export class ProductRegistration extends Component {
                           type="text"
                           className="form-control input-feature"
                           placeholder=""
+                          defaultValue={item.description}
                           name={"des" + (index + 1)}
                           onChange={(e) => {
                             let change = e.target.value;
@@ -346,7 +371,7 @@ export class ProductRegistration extends Component {
                 </div>
               </div>
 
-              <div className="row">
+              <div className="row mt-2">
                 <label className="col-sm-2 col-form-label t-r">قیمت:</label>
                 <div className="col-sm-10">
                   <div
@@ -362,6 +387,7 @@ export class ProductRegistration extends Component {
                       placeholder=""
                       name="price"
                       onChange={this.changeHandler.bind(this)}
+                      defaultValue={this.state.data.price}
                     />
                     {this.state.priceError ? (
                       <small className="d-block text-danger">
@@ -390,6 +416,7 @@ export class ProductRegistration extends Component {
                       className="form-control"
                       placeholder=""
                       name="description"
+                      defaultValue={this.state.data.description}
                       onChange={this.changeHandler.bind(this)}
                     />
                     {this.state.descriptionError ? (
@@ -407,7 +434,7 @@ export class ProductRegistration extends Component {
                   <span className="btn-label">
                     <i className="material-icons">check</i>
                   </span>
-                  ثبت محصول
+                  ویراش محصول
                   <div className="ripple-container"></div>
                 </button>
               </div>
@@ -415,6 +442,8 @@ export class ProductRegistration extends Component {
           </div>
         </div>
       </div>
+    ) : (
+      <Loading />
     );
   }
 }

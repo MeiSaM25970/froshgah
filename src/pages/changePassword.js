@@ -1,15 +1,15 @@
 import React, { Component, Fragment } from "react";
+import { ChangePassword } from "../component/changePassword";
 import { MainNavbar, SideBar } from "../component/dashboard";
-import { ManageProductAInputForm } from "../component/managePages";
-
-export class ManageProductAPage extends Component {
+export class ChangePasswordPage extends Component {
+  state = {};
   render() {
     return (
       <Fragment>
         <SideBar {...this.props} />
         <div className="main-panel ps ps--active-y">
           <MainNavbar {...this.props} />
-          <ManageProductAInputForm data={this.props.data[0]} />
+          <ChangePassword {...this.props} />
         </div>
       </Fragment>
     );

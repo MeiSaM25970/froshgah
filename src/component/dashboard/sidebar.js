@@ -17,6 +17,14 @@ export class SideBar extends Component {
       categories: false,
       order: false,
       orderId: false,
+      message: false,
+      about: false,
+      newBlog: false,
+      comments: false,
+      commentDetail: false,
+      contactDetail: false,
+      weblogs: false,
+      editWeblog: false,
     },
   };
   userInfo =
@@ -36,10 +44,11 @@ export class SideBar extends Component {
   componentWillReceiveProps(newProps) {
     if (this.props.location.pathname !== newProps.location.pathname) {
       this.setState({ newProps: "Received" });
+      this.activeSidebar();
     }
   }
   activeSidebar() {
-    switch (this.props.location.pathname) {
+    switch (this.props.match.path) {
       case "/dashboard":
         return this.setState({ activeSidebar: { dashboard: true } });
       case "/myprofile":
@@ -58,10 +67,24 @@ export class SideBar extends Component {
         return this.setState({ activeSidebar: { categories: true } });
       case "/order":
         return this.setState({ activeSidebar: { order: true } });
-
       case "/order/:id":
         return this.setState({ activeSidebar: { orderId: true } });
-
+      case "/about":
+        return this.setState({ activeSidebar: { about: true } });
+      case "/contact":
+        return this.setState({ activeSidebar: { message: true } });
+      case "/contact/:id":
+        return this.setState({ activeSidebar: { contactDetail: true } });
+      case "/newblog":
+        return this.setState({ activeSidebar: { newBlog: true } });
+      case "/comments":
+        return this.setState({ activeSidebar: { comments: true } });
+      case "/comment/:id":
+        return this.setState({ activeSidebar: { commentDetail: true } });
+      case "/weblogs":
+        return this.setState({ activeSidebar: { weblogs: true } });
+      case "/weblogs/:id":
+        return this.setState({ activeSidebar: { editWeblog: true } });
       default:
         return this.state.activeSidebar;
     }
@@ -306,7 +329,6 @@ export class SideBar extends Component {
                     }
                   >
                     <Link className="nav-link" to="/order">
-                      <span className="sidebar-mini"> B </span>
                       <span className="sidebar-normal"> سفارشات </span>
                     </Link>
                   </li>
@@ -315,7 +337,10 @@ export class SideBar extends Component {
             </li>
             <li
               className={
-                this.state.activeSidebar.categories
+                this.state.activeSidebar.categories ||
+                this.state.activeSidebar.newBlog ||
+                this.state.activeSidebar.weblogs ||
+                this.state.activeSidebar.editWeblog
                   ? "nav-item active"
                   : "nav-item"
               }
@@ -324,8 +349,13 @@ export class SideBar extends Component {
               <a
                 className="nav-link collapsed"
                 data-toggle="collapse"
-                href="#content-type-3"
-                aria-expanded={this.state.activeSidebar.categories}
+                href="#des-sidebar"
+                aria-expanded={
+                  this.state.activeSidebar.categories ||
+                  this.state.activeSidebar.newBlog ||
+                  this.state.activeSidebar.weblogs ||
+                  this.state.activeSidebar.editWeblog
+                }
               >
                 <i className="material-icons">description </i>
                 <p>
@@ -336,15 +366,24 @@ export class SideBar extends Component {
               </a>
               <div
                 className={
-                  this.state.activeSidebar.categories
+                  this.state.activeSidebar.categories ||
+                  this.state.activeSidebar.newBlog ||
+                  this.state.activeSidebar.weblogs ||
+                  this.state.activeSidebar.editWeblog
                     ? "collapse show"
                     : "collapse"
                 }
-                id="content-type-3"
+                id="des-sidebar"
               >
                 <ul className="nav">
-                  <li className={"nav-item"}>
-                    <Link className="nav-link" to="/order">
+                  <li
+                    className={
+                      this.state.activeSidebar.newBlog
+                        ? "nav-item active"
+                        : "nav-item"
+                    }
+                  >
+                    <Link className="nav-link" to="/newblog">
                       <span className="sidebar-normal"> مقاله جدید </span>
                     </Link>
                   </li>
@@ -355,57 +394,158 @@ export class SideBar extends Component {
                         : "nav-item"
                     }
                   >
-                    <Link
-                      to="/categories"
-                      className="nav-link"
-                      href="../examples/components/grid.html"
-                    >
+                    <Link to="/categories" className="nav-link">
                       <span className="sidebar-normal"> موضوعات </span>
                     </Link>
                   </li>
-                  <li className="nav-item ">
-                    <a
-                      className="nav-link"
-                      href="../examples/components/grid.html"
-                    >
+                  <li
+                    className={
+                      this.state.activeSidebar.weblogs ||
+                      this.state.activeSidebar.editWeblog
+                        ? "nav-item active"
+                        : "nav-item"
+                    }
+                  >
+                    <Link to="/weblogs" className="nav-link">
                       <span className="sidebar-normal"> مقالات </span>
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>
             </li>
 
-            <li className="nav-item ">
+            <li
+              className={
+                this.state.activeSidebar.message ||
+                this.state.activeSidebar.contactDetail
+                  ? "nav-item active"
+                  : "nav-item"
+              }
+            >
               <a
                 className="nav-link collapsed"
                 data-toggle="collapse"
                 href="#formsExamples"
-                aria-expanded="false"
+                aria-expanded={
+                  this.state.activeSidebar.message ||
+                  this.state.activeSidebar.contactDetail
+                }
               >
                 <i className="material-icons">message</i>
                 <p>
-                  {" "}
                   پیام ها
                   <b className="caret"></b>
                 </p>
               </a>
-              <div className="collapse" id="formsExamples">
+              <div
+                className={
+                  this.state.activeSidebar.message ||
+                  this.state.activeSidebar.contactDetail
+                    ? "collapse show"
+                    : "collapse"
+                }
+                id="formsExamples"
+              >
                 <ul className="nav">
-                  <li className="nav-item ">
-                    <a
-                      className="nav-link"
-                      href="../examples/forms/regular.html"
-                    >
-                      <span className="sidebar-normal"> تیکت ها </span>
-                    </a>
-                  </li>
-                  <li className="nav-item ">
-                    <a
-                      className="nav-link"
-                      href="../examples/forms/extended.html"
-                    >
+                  <li
+                    className={
+                      this.state.activeSidebar.message ||
+                      this.state.activeSidebar.contactDetail
+                        ? "nav-item active"
+                        : "nav-item"
+                    }
+                  >
+                    <Link className="nav-link" to="/contact">
                       <span className="sidebar-normal"> تماس با ما</span>
-                    </a>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li
+              className={
+                this.state.activeSidebar.about ? "nav-item active" : "nav-item"
+              }
+            >
+              <a
+                className="nav-link collapsed"
+                data-toggle="collapse"
+                href="#aboutUs"
+                aria-expanded={this.state.activeSidebar.about}
+              >
+                <i className="material-icons">info </i>
+                <p>
+                  {" "}
+                  درباره ما
+                  <b className="caret"></b>
+                </p>
+              </a>
+              <div
+                className={
+                  this.state.activeSidebar.about ? "collapse show" : "collapse"
+                }
+                id="aboutUs"
+              >
+                <ul className="nav">
+                  <li
+                    className={
+                      this.state.activeSidebar.about
+                        ? "nav-item active"
+                        : "nav-item"
+                    }
+                  >
+                    <Link className="nav-link" to="/about">
+                      <span className="sidebar-normal"> تنظیمات </span>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li
+              className={
+                this.state.activeSidebar.comments ||
+                this.state.activeSidebar.commentDetail
+                  ? "nav-item active"
+                  : "nav-item"
+              }
+            >
+              <a
+                className="nav-link collapsed"
+                data-toggle="collapse"
+                href="#comments"
+                aria-expanded={
+                  this.state.activeSidebar.comments ||
+                  this.state.activeSidebar.commentDetail
+                }
+              >
+                <i className="material-icons">comment </i>
+                <p>
+                  {" "}
+                  نظرات
+                  <b className="caret"></b>
+                </p>
+              </a>
+              <div
+                className={
+                  this.state.activeSidebar.comments ||
+                  this.state.activeSidebar.commentDetail
+                    ? "collapse show"
+                    : "collapse"
+                }
+                id="comments"
+              >
+                <ul className="nav">
+                  <li
+                    className={
+                      this.state.activeSidebar.comments ||
+                      this.state.activeSidebar.commentDetail
+                        ? "nav-item active"
+                        : "nav-item"
+                    }
+                  >
+                    <Link className="nav-link" to="/comments">
+                      <span className="sidebar-normal"> مدیریت نظرات </span>
+                    </Link>
                   </li>
                 </ul>
               </div>

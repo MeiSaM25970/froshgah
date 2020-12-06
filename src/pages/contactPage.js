@@ -1,22 +1,25 @@
 import React, { Component, Fragment } from "react";
+import { Contact } from "../component/contact";
 import { MainNavbar, SideBar } from "../component/dashboard";
-import { OrderDetail } from "../component/orderDetail";
 import * as userService from "../service";
 
-export class OrderDetailPage extends Component {
-  state = { order: {} };
+export class ContactPage extends Component {
+  state = { contact: [] };
   componentDidMount() {
-    const id = this.props.match.params.id;
-    userService.orderById(id).then((res) => this.setState({ order: res.data }));
+    userService
+      .fetchContact()
+      .then((res) => {
+        this.setState({ contact: res.data });
+      })
+      .catch(() => this.props.history.push("/error"));
   }
-
   render() {
     return (
       <Fragment>
         <SideBar {...this.props} />
         <div className="main-panel ps ps--active-y">
           <MainNavbar {...this.props} />
-          <OrderDetail order={this.state.order} {...this.props} />
+          <Contact contact={this.state.contact} {...this.props} />
         </div>
       </Fragment>
     );

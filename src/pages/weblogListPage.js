@@ -1,15 +1,24 @@
 import React, { Component, Fragment } from "react";
-import { ProductList } from "../component/product";
 import { SideBar, MainNavbar } from "../component/dashboard";
+import { itemsStore } from "../component/weblog/redux/store";
+import { WeblogList } from "../component/weblog/weblogList";
+import * as userService from "../service";
 
-export class ProductPage extends Component {
-  state = {};
+export class WeblogListPage extends Component {
+  state = { data: [] };
   userInfo =
     localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo");
   componentDidMount() {
     if (!this.userInfo) {
       this.props.history.push("/login");
-    }
+    } else this.fetchData();
+    this.unsubscribe = itemsStore.subscribe(() => this.fetchData());
+  }
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+  fetchData() {
+    userService.fetchWeblog().then((res) => this.setState({ data: res.data }));
   }
   render() {
     return (
@@ -21,11 +30,11 @@ export class ProductPage extends Component {
           <div className="content">
             <div className="content">
               <div className="container-fluid">
-                <h3 className="text-right ir-r">لیست محصولات</h3>
+                <h3 className="text-right ir-r">لیست مقالات</h3>
                 <br />
                 <div className="row mt-5">
                   {" "}
-                  <ProductList data={this.props.data} />
+                  <WeblogList data={this.state.data} {...this.props} />
                 </div>
               </div>
             </div>

@@ -93,3 +93,37 @@
 .page-header footer {
   height: auto;
 }
+.MTablePaginationInner-root-14 {
+  direction: ltr !important;
+}
+.MuiButtonBase-root.MuiTableSortLabel-root.Mui-disabled {
+  visibility: hidden;
+}
+.MuiTableCell-root.MuiTableCell-head.MTableHeader-header-13.MuiTableCell-alignLeft {
+  text-align: center;
+}
+@font-face {
+  font-family: iransans;
+  src: url("/fonts/iransans-regular.woff");
+}
+.MuiTypography-root.MuiTypography-h6 {
+  font-family: iransans !important;
+}
+.c-w-200 {
+  min-width: 200px !important;
+}
+@media screen and (max-width: 440px) {
+  .c-w-200 {
+    min-width: auto !important;
+  }
+}
+.filter-option-inner-inner {
+  text-align: right !important;
+}
+.comment-link {
+  cursor: pointer;
+}
+.notification-count {
+  position: absolute;
+  left: 25px;
+}

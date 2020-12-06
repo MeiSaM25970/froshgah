@@ -1,22 +1,26 @@
 import React, { Component, Fragment } from "react";
+import { Comments } from "../component/comments";
 import { MainNavbar, SideBar } from "../component/dashboard";
-import { OrderDetail } from "../component/orderDetail";
 import * as userService from "../service";
 
-export class OrderDetailPage extends Component {
-  state = { order: {} };
+export class CommentsPage extends Component {
+  state = { comments: [] };
   componentDidMount() {
-    const id = this.props.match.params.id;
-    userService.orderById(id).then((res) => this.setState({ order: res.data }));
+    userService
+      .fetchComments()
+      .then((res) => {
+        this.setState({ comments: res.data });
+      })
+      .catch(() => this.props.history.push("/error"));
   }
-
   render() {
+    console.log(this.state);
     return (
       <Fragment>
         <SideBar {...this.props} />
         <div className="main-panel ps ps--active-y">
           <MainNavbar {...this.props} />
-          <OrderDetail order={this.state.order} {...this.props} />
+          <Comments comments={this.state.comments} {...this.props} />
         </div>
       </Fragment>
     );

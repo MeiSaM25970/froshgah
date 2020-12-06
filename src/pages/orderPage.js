@@ -19,7 +19,7 @@ export class OrderPage extends Component {
         <SideBar {...this.props} />
         <div className="main-panel ps ps--active-y">
           <MainNavbar {...this.props} />
-          <Order orders={this.state.orders} />
+          <Order orders={this.state.orders} {...this.props} />
         </div>
       </Fragment>
     );

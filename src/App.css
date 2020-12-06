@@ -1,14 +1,14 @@
 @font-face {
   font-family: iransans-regular;
-  src: url(/fonts/iransans-regular.woff);
+  src: url(/src/fonts/iransans-regular.woff);
 }
 @font-face {
   font-family: iransans-bold;
-  src: url(/fonts/iransans-bold.woff);
+  src: url(/src/fonts/iransans-bold.woff);
 }
 @font-face {
   font-family: B NAZANIN;
-  src: url(/fonts/B-NAZANIN.TTF);
+  src: url(/src/fonts/B-NAZANIN.TTF);
 }
 .ir-r {
   font-family: iransans-regular;

@@ -3,6 +3,8 @@ import validator from "validator";
 import * as userService from "../../service";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+import { productStore } from "./redux/store";
+import { addProduct } from "./redux/actions";
 export class ProductRegistration extends Component {
   constructor(props) {
     super(props);
@@ -67,9 +69,10 @@ export class ProductRegistration extends Component {
 
                     <button
                       className="btn btn-success"
-                      onClick={() => {
-                        onClose();
-                        window.location.replace(`/product`);
+                      onClick={async () => {
+                        await productStore.dispatch(addProduct(product));
+                        await onClose();
+                        await this.props.history.push("/product");
                       }}
                     >
                       باشه

@@ -15,12 +15,21 @@ import {
   EditProfilePage,
   NewUserPage,
   ChangePasswordPage,
+  AboutUsPage,
+  ContactDetailPage,
+  CommentDetailPage,
+  CommentsPage,
+  WeblogPage,
+  ContactPage,
 } from "./pages/";
 import { Login } from "./component/Login";
 import { SuccessDone } from "./component/product/success";
 import * as userService from "./service";
 import { loginUserStore } from "./component/Login/redux";
 import { switchSidebarStore } from "./component/dashboard/redux/";
+import { WeblogListPage } from "./pages/weblogListPage";
+import { productStore } from "./component/product/redux/store";
+import { EditBlogPage } from "./pages/editBlogePage";
 
 class App extends Component {
   state = { data: [], miniSidebar: false };
@@ -51,9 +60,11 @@ class App extends Component {
         miniSidebar: switchSidebarStore.getState()[arrayNumber - 1],
       });
     });
+    this.productUnsubscribe = productStore.subscribe(() => this.fetchData());
   }
   componentWillUnmount() {
     this.unsubscribe();
+    this.productUnsubscribe();
   }
 
   render() {
@@ -87,7 +98,24 @@ class App extends Component {
                   </Page>
                 )}
               />
-
+              <Route
+                path="/comments"
+                exact
+                render={(props) => (
+                  <Page title="نظرات">
+                    <CommentsPage {...props} />
+                  </Page>
+                )}
+              />
+              <Route
+                path="/comment/:id"
+                exact
+                render={(props) => (
+                  <Page title="نظرات">
+                    <CommentDetailPage {...props} />
+                  </Page>
+                )}
+              />
               <Route
                 path="/product"
                 exact
@@ -152,7 +180,24 @@ class App extends Component {
                   </Page>
                 )}
               />
-
+              <Route
+                path="/contact/:id"
+                exact
+                render={(props) => (
+                  <Page title=" جزئیات پیام">
+                    <ContactDetailPage {...props} />
+                  </Page>
+                )}
+              />
+              <Route
+                path="/contact"
+                exact
+                render={(props) => (
+                  <Page title=" تماس با ما">
+                    <ContactPage {...props} data={this.state.data} />
+                  </Page>
+                )}
+              />
               <Route
                 path="/categories"
                 exact
@@ -190,6 +235,42 @@ class App extends Component {
                   </Page>
                 )}
               />
+              <Route
+                path="/about"
+                exact
+                render={(props) => (
+                  <Page title=" درباره ما">
+                    <AboutUsPage {...props} data={this.state.data} />
+                  </Page>
+                )}
+              />
+              <Route
+                path={"/newblog"}
+                exact
+                render={(props) => (
+                  <Page title=" مقاله جدید">
+                    <WeblogPage {...props} />
+                  </Page>
+                )}
+              />
+              <Route
+                path={"/weblogs/:id"}
+                exact
+                render={(props) => (
+                  <Page title=" ویرایش مقاله">
+                    <EditBlogPage {...props} />
+                  </Page>
+                )}
+              />
+              <Route
+                path="/weblogs"
+                exact
+                render={(props) => (
+                  <Page title=" لیست مقالات ">
+                    <WeblogListPage {...props} />
+                  </Page>
+                )}
+              />
               <Redirect to="/login" />
             </Switch>
           </BrowserRouter>
@@ -222,7 +303,7 @@ class App extends Component {
                 )}
               />
 
-              <Redirect to="/login" />
+              {/* <Redirect to="/login" /> */}
             </Switch>
           </BrowserRouter>
         </div>

@@ -7,8 +7,10 @@ export async function userInfo() {
     window.localStorage.getItem("userInfo") ||
     window.sessionStorage.getItem("userInfo");
   JWT = JSON.parse(JWT);
+  if (!JWT) {
+    window.location.replace("/login");
+  }
 }
-userInfo();
 
 export async function createProduct(product) {
   await userInfo();
@@ -136,7 +138,16 @@ export async function EditProduct(id, product) {
   return axios.put(API_ADDRESS_SERVICE + "products/" + id, product, headers);
 }
 export async function createCategories(category) {
-  return axios.post(API_ADDRESS_SERVICE + "categories", category);
+  await userInfo();
+
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.post(API_ADDRESS_SERVICE + "categories", category, headers);
 }
 
 export async function fetchCategories() {
@@ -197,4 +208,200 @@ export async function changePassword(newPassword) {
     newPassword,
     headers
   );
+}
+export async function createAbout(about) {
+  await userInfo();
+
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.post(API_ADDRESS_SERVICE + "about", about, headers);
+}
+export async function updateAbout(id, about) {
+  await userInfo();
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.post(API_ADDRESS_SERVICE + "about/" + id, about, headers);
+}
+export function fetchAbout() {
+  return axios.get(API_ADDRESS_SERVICE + "about");
+}
+export async function fetchContact() {
+  await userInfo();
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.get(API_ADDRESS_SERVICE + "contact", headers);
+}
+export async function updateConcat(id, contact) {
+  await userInfo();
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.post(API_ADDRESS_SERVICE + "contact/" + id, contact, headers);
+}
+export async function deleteContact(_id) {
+  await userInfo();
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.delete(API_ADDRESS_SERVICE + "contact/" + _id, headers);
+}
+export async function fetchContactById(id) {
+  await userInfo();
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.get(API_ADDRESS_SERVICE + "contact/" + id, headers);
+}
+export async function deleteCategory(id) {
+  await userInfo();
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.delete(API_ADDRESS_SERVICE + "categories/" + id, headers);
+}
+export async function updateCategory(id, category) {
+  await userInfo();
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.put(API_ADDRESS_SERVICE + "categories/" + id, category, headers);
+}
+export async function uploadWeblogImg(img) {
+  await userInfo();
+
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.post(API_ADDRESS_SERVICE + "upload/weblog", img, headers);
+}
+// weblog Service
+export async function createWeblog(weblog) {
+  await userInfo();
+
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.post(API_ADDRESS_SERVICE + "weblog", weblog, headers);
+}
+export async function updateWeblog(id, weblog) {
+  await userInfo();
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.put(API_ADDRESS_SERVICE + "weblog/" + id, weblog, headers);
+}
+export function fetchWeblog() {
+  return axios.get(API_ADDRESS_SERVICE + "weblog");
+}
+export async function deleteWeblog(id) {
+  await userInfo();
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.delete(API_ADDRESS_SERVICE + "weblog/" + id, headers);
+}
+export function fetchComments() {
+  return axios.get(API_ADDRESS_SERVICE + "comments");
+}
+
+export async function updateComments(id, comment) {
+  await userInfo();
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.put(API_ADDRESS_SERVICE + "comments/" + id, comment, headers);
+}
+export async function deleteComment(id) {
+  await userInfo();
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.delete(API_ADDRESS_SERVICE + "comments/" + id, headers);
+}
+export async function findCommentById(id) {
+  await userInfo();
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.get(API_ADDRESS_SERVICE + "comments/comment/" + id, headers);
+}
+export function filterCommentsByWeblogId(weblogId) {
+  return axios.get(API_ADDRESS_SERVICE + "comments/" + weblogId);
+}
+export function findWeblogById(id) {
+  return axios.get(API_ADDRESS_SERVICE + "weblog/" + id);
+}
+export async function counter() {
+  await userInfo();
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.get(API_ADDRESS_SERVICE + "counter", headers);
 }

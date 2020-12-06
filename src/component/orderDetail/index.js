@@ -252,6 +252,7 @@ export class OrderDetail extends Component {
                     </small>
                   </div>
                 )}
+
                 <div className="row">
                   <label className="col-sm-2 col-form-label ir-r order-detail-text-right">
                     شماره تماس:
@@ -325,7 +326,38 @@ export class OrderDetail extends Component {
                     </div>
                   )
                 )}
+                <div className="row">
+                  <label className="col-sm-2 col-form-label ir-r order-detail-text-right">
+                    محصول خریداری شده:
+                  </label>
+                  <div className="col-sm-6">
+                    <div className="form-group bmd-form-group">
+                      <span className="form-control">
+                        {this.state.order.productName}
+                      </span>
 
+                      {/* <span className="bmd-help">
+                        A block of help text that breaks onto a new line.
+                      </span> */}
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <label className="col-sm-2 col-form-label ir-r order-detail-text-right">
+                    قیمت:
+                  </label>
+                  <div className="col-sm-6">
+                    <div className="form-group bmd-form-group">
+                      <span className="form-control">
+                        {this.state.order.price}
+                      </span>
+
+                      {/* <span className="bmd-help">
+                        A block of help text that breaks onto a new line.
+                      </span> */}
+                    </div>
+                  </div>
+                </div>
                 <div className="row">
                   <label className="col-sm-2 col-form-label ir-r order-detail-text-right">
                     تاریخ ثبت:

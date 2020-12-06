@@ -203,7 +203,7 @@ export class ProductEdit extends Component {
         <div className="card ">
           <div className="card-header card-header-rose card-header-text text-right">
             <div className="card-text">
-              <h4 className="card-title ir-r">ثبت محصول</h4>
+              <h4 className="card-title ir-r">ویرایش محصول</h4>
             </div>
           </div>
           <div className="card-body ">

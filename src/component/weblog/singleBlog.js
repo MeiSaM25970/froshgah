@@ -1,20 +1,29 @@
 import React, { Component } from "react";
 import { API_ADDRESS_SERVICE, PUBLIC_FACE } from "../../env";
-import numeral from "numeral";
 import { Link } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import * as userService from "../../service";
-import { productStore } from "./redux/store";
-import { removeProduct } from "./redux/actions";
+import { itemsStore } from "./redux/store";
+import { fetchItem } from "./redux/actions";
+import { Weblog } from ".";
 
-export class Product extends Component {
-  state = {};
-  handleClickDelete = () => {
-    userService
-      .deleteProduct(this.props.item._id)
+export class SingleBlog extends Component {
+  state = { loading: false };
+  componentDidMount() {
+    this.setState({ item: this.props.item });
+  }
+  componentWillReceiveProps(newProps) {
+    if (newProps.item._id !== this.props.item._id) {
+      this.setState({ item: newProps.item });
+    }
+  }
+  handleClickDelete = async () => {
+    await userService
+      .deleteWeblog(this.state.item._id)
       .then(() => {
-        productStore.dispatch(removeProduct(this.props.item));
+        this.setState({ loading: false });
+        itemsStore.dispatch(fetchItem(this.state.item));
       })
       .catch();
   };
@@ -27,18 +36,20 @@ export class Product extends Component {
 
             <h1 className="ir-r">مطمئنید؟</h1>
 
-            <p className="ir-r">آیا شما میخواهید این سفارش را پاک کنید؟</p>
+            <p className="ir-r">آیا شما میخواهید این مقاله را پاک کنید؟</p>
             <button className="btn btn-danger" onClick={onClose}>
               خیر
             </button>
             <button
               className="btn btn-success"
-              onClick={() => {
-                this.handleClickDelete();
-                onClose();
+              onClick={async () => {
+                await this.setState({ loading: true });
+
+                await this.handleClickDelete();
+                await onClose();
               }}
             >
-              بله ، پاک کن!
+              {this.state.loading ? "..." : "بله ، پاک کن!"}
             </button>
           </div>
         );
@@ -46,7 +57,7 @@ export class Product extends Component {
     });
   };
   render() {
-    return this.props.item ? (
+    return this.state.item ? (
       <div className="col-md-4">
         <div className="card card-product">
           <div
@@ -56,7 +67,7 @@ export class Product extends Component {
             <a href="#pablo">
               <img
                 className="img"
-                src={API_ADDRESS_SERVICE + this.props.item.img}
+                src={API_ADDRESS_SERVICE + this.state.item.imgPath}
                 alt="..."
               />
             </a>
@@ -70,7 +81,7 @@ export class Product extends Component {
                 <i className="material-icons">build</i> Fix Header!
               </button>
               <a
-                href={PUBLIC_FACE + "products/" + this.props.item._id}
+                href={PUBLIC_FACE + "singleBlog/" + this.state.item._id}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -85,7 +96,7 @@ export class Product extends Component {
                   <i className="material-icons">art_track</i>
                 </button>
               </a>
-              <Link to={"/product/" + this.props.item._id}>
+              <Link to={"/weblogs/" + this.state.item._id}>
                 <button
                   type="button"
                   className="btn btn-success btn-link"
@@ -110,24 +121,15 @@ export class Product extends Component {
               </button>
             </div>
             <h4 className="card-title">
-              <a href="#pablo">{this.props.item.title}</a>
+              <a href="#pablo">{this.state.item.title}</a>
             </h4>
-            <div className="card-description">
-              {this.props.item.description}
-            </div>
-          </div>
-          <div className="card-footer">
-            <div className="price mx-auto">
-              <h4 className="ir-r">
-                {numeral(this.props.item.price).format(0, 0) + " تومان"}
-              </h4>
-            </div>
+            <div className="card-description">{this.state.item.littleDes}</div>
           </div>
         </div>
       </div>
     ) : (
       <div className="container text-right">
-        <h3 className="text-warning">محصولی وجود ندارد.</h3>
+        <h3 className="text-warning">مقاله ای وجود ندارد.</h3>
       </div>
     );
   }

@@ -6,7 +6,6 @@ import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import * as userService from "../../service";
 import { itemsStore } from "./redux/store";
 import { fetchItem } from "./redux/actions";
-import { Weblog } from ".";
 
 export class SingleBlog extends Component {
   state = { loading: false };

@@ -412,18 +412,22 @@ export class EditProfile extends Component {
                         </div>
                       </div>
                     </div>
-                    <button
-                      type="submit"
-                      className="btn btn-rose pull-right"
-                      disabled={this.state.disableButton}
-                    >
-                      {this.state.loading ? <Loading /> : " ذخیره"}
-                    </button>
-                    <Link to="/dashboard">
-                      <button className=" btn btn-mute" type="button">
-                        بازگشت
-                      </button>
-                    </Link>
+                    <div className="row " style={{ marginTop: 100 }}>
+                      <div className="mr-5">
+                        <button
+                          type="submit"
+                          className="btn btn-rose pull-right"
+                          disabled={this.state.disableButton}
+                        >
+                          {this.state.loading ? <Loading /> : " ذخیره"}
+                        </button>
+                        <Link to="/dashboard">
+                          <button className=" btn btn-mute" type="button">
+                            بازگشت
+                          </button>
+                        </Link>
+                      </div>
+                    </div>
                     <div className="clearfix"></div>
                   </form>
                 </div>

@@ -30,6 +30,7 @@ import { switchSidebarStore } from "./component/dashboard/redux/";
 import { WeblogListPage } from "./pages/weblogListPage";
 import { productStore } from "./component/product/redux/store";
 import { EditBlogPage } from "./pages/editBlogePage";
+import { UsersPage } from "./pages/usersPage";
 
 class App extends Component {
   state = { data: [], miniSidebar: false };
@@ -186,6 +187,15 @@ class App extends Component {
                 render={(props) => (
                   <Page title=" جزئیات پیام">
                     <ContactDetailPage {...props} />
+                  </Page>
+                )}
+              />
+              <Route
+                path="/users"
+                exact
+                render={(props) => (
+                  <Page title=" مدیریت کاربران">
+                    <UsersPage {...props} />
                   </Page>
                 )}
               />

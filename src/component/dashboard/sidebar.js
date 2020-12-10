@@ -25,6 +25,7 @@ export class SideBar extends Component {
       contactDetail: false,
       weblogs: false,
       editWeblog: false,
+      users: false,
     },
   };
   userInfo =
@@ -85,6 +86,8 @@ export class SideBar extends Component {
         return this.setState({ activeSidebar: { weblogs: true } });
       case "/weblogs/:id":
         return this.setState({ activeSidebar: { editWeblog: true } });
+      case "/users":
+        return this.setState({ activeSidebar: { users: true } });
       default:
         return this.state.activeSidebar;
     }
@@ -545,6 +548,45 @@ export class SideBar extends Component {
                   >
                     <Link className="nav-link" to="/comments">
                       <span className="sidebar-normal"> مدیریت نظرات </span>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li
+              className={
+                this.state.activeSidebar.users ? "nav-item active" : "nav-item"
+              }
+            >
+              <a
+                className="nav-link collapsed"
+                data-toggle="collapse"
+                href="#users"
+                aria-expanded={this.state.activeSidebar.users}
+              >
+                <i className="material-icons">supervisor_account</i>
+                <p>
+                  {" "}
+                  کاربران
+                  <b className="caret"></b>
+                </p>
+              </a>
+              <div
+                className={
+                  this.state.activeSidebar.users ? "collapse show" : "collapse"
+                }
+                id="users"
+              >
+                <ul className="nav">
+                  <li
+                    className={
+                      this.state.activeSidebar.users
+                        ? "nav-item active"
+                        : "nav-item"
+                    }
+                  >
+                    <Link className="nav-link" to="/users">
+                      <span className="sidebar-normal"> مدیریت کاربران </span>
                     </Link>
                   </li>
                 </ul>

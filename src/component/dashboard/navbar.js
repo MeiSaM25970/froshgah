@@ -31,6 +31,7 @@ export class MainNavbar extends Component {
       contactDetail: false,
       weblogs: false,
       editWeblog: false,
+      users: false,
     },
   };
   async switchToSidebar() {
@@ -128,7 +129,8 @@ export class MainNavbar extends Component {
         return this.setState({ activeSidebar: { editWeblog: true } });
       case "/weblogs":
         return this.setState({ activeSidebar: { weblogs: true } });
-
+      case "/users":
+        return this.setState({ activeSidebar: { users: true } });
       default:
         return this.state.activeSidebar;
     }

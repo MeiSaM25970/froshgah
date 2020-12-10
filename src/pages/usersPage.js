@@ -1,25 +1,18 @@
 import React, { Component, Fragment } from "react";
-import { Comments } from "../component/comments";
 import { MainNavbar, SideBar } from "../component/dashboard";
+import { Users } from "../component/users";
 import * as userService from "../service";
 
-export class CommentsPage extends Component {
+export class UsersPage extends Component {
   state = { comments: [] };
-  componentDidMount() {
-    userService
-      .fetchComments()
-      .then((res) => {
-        this.setState({ comments: res.data });
-      })
-      .catch(() => this.props.history.push("/error"));
-  }
+  componentDidMount() {}
   render() {
     return (
       <Fragment>
         <SideBar {...this.props} />
         <div className="main-panel ps ps--active-y">
           <MainNavbar {...this.props} />
-          <Comments comments={this.state.comments} {...this.props} />
+          <Users {...this.props} />
         </div>
       </Fragment>
     );

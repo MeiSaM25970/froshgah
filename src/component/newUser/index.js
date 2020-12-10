@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import validator from "validator";
 import * as userService from "../../service";
 import Loading from "../loading";
+import { confirmAlert } from "react-confirm-alert"; // Import
+import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 
 export class NewUser extends Component {
   state = {
@@ -49,12 +51,33 @@ export class NewUser extends Component {
       await userService
         .register(userInfo)
         .then((response) => {
-          this.setState({ loading: false });
+          confirmAlert({
+            customUI: ({ onClose }) => {
+              return (
+                <div className="custom-ui text-right ">
+                  <i className="material-icons-outlined">done</i>
+
+                  <p className="ir-r">کاربر جدید با موفقیت اضافه شد</p>
+
+                  <button
+                    className="btn btn-success"
+                    onClick={() => {
+                      onClose();
+                    }}
+                  >
+                    باشه
+                  </button>
+                </div>
+              );
+            },
+          });
         })
         .catch((error) => {
-          if (error.response.status === 400) {
-            this.setState({ usernameAvailable: true });
-          }
+          if (error.status) {
+            if (error.response.status === 400) {
+              this.setState({ usernameAvailable: true });
+            }
+          } else console.log(error);
         });
     } else {
       await this.setState({ isValid: false });

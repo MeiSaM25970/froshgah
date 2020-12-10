@@ -42,9 +42,8 @@ export async function fetchProduct() {
   return await axios.get(API_ADDRESS_SERVICE + "products");
 }
 
-export async function register(userInfo) {
+export async function register(newUser) {
   await userInfo();
-
   var headers = JWT
     ? {
         headers: {
@@ -52,7 +51,7 @@ export async function register(userInfo) {
         },
       }
     : undefined;
-  return axios.post(API_ADDRESS_SERVICE + "auth/register", userInfo, headers);
+  return axios.post(API_ADDRESS_SERVICE + "auth/register", newUser, headers);
 }
 
 export async function login(userInfo) {
@@ -404,4 +403,29 @@ export async function counter() {
       }
     : undefined;
   return axios.get(API_ADDRESS_SERVICE + "counter", headers);
+}
+export async function fetchUsers(id) {
+  await userInfo();
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.get(API_ADDRESS_SERVICE + "auth/users?username=" + id, headers);
+}
+export async function deleteUser(adminUsername, userId) {
+  await userInfo();
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.delete(
+    API_ADDRESS_SERVICE + "auth/" + adminUsername + "?id=" + userId,
+    headers
+  );
 }

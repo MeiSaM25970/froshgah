@@ -127,3 +127,12 @@
   position: absolute;
   left: 25px;
 }
+.MuiTableCell-root
+  .MuiTableCell-head
+  .MTableHeader-header-13
+  .MuiTableCell-alignLeft {
+  text-align: center !important;
+}
+.MuiButtonBase-root .MuiTableSortLabel-root {
+  text-align: center !important;
+}

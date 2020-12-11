@@ -98,8 +98,7 @@ export class Categories extends Component {
                     this.setState({ feature: [] });
                     this.fetchCategories();
                   })
-                  .catch((err) => console.log(err))
-                  .finally(() => console.log(this.state));
+                  .catch((err) => console.log(err));
                 onClose();
               }}
             >

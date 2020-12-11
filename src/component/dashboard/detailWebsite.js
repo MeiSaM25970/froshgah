@@ -40,7 +40,7 @@ export class DetailWebsite extends Component {
       <Fragment>
         <div className="row">
           <div className="col-lg-4 col-md-6 col-sm-6">
-            <div className="card card-stats">
+            <div className="card card-stats ">
               <div
                 className="card-header card-header-warning card-header-icon "
                 style={{ height: 100 }}
@@ -54,7 +54,7 @@ export class DetailWebsite extends Component {
             </div>
           </div>
           <div className="col-lg-4 col-md-6 col-sm-6">
-            <div className="card card-stats">
+            <div className="card card-stats ">
               <div
                 className="card-header card-header-success card-header-icon"
                 style={{ height: 100 }}
@@ -62,7 +62,7 @@ export class DetailWebsite extends Component {
                 <div className="card-icon">
                   <i className="material-icons">store</i>
                 </div>
-                <p className="card-category">جمع کل پرداختی ها</p>
+                <p className="card-category">جمع پرداختی ها</p>
                 <h3 className="card-title ir-r">
                   {numeral(this.state.price).format("0,0") + "  تومان"}
                 </h3>
@@ -70,7 +70,7 @@ export class DetailWebsite extends Component {
             </div>
           </div>
           <div className="col-lg-4 col-md-6 col-sm-6">
-            <div className="card card-stats">
+            <div className="card card-stats ">
               <div
                 className="card-header card-header-rose card-header-icon"
                 style={{ height: 100 }}
@@ -78,7 +78,7 @@ export class DetailWebsite extends Component {
                 <div className="card-icon">
                   <i className="material-icons">equalizer</i>
                 </div>
-                <p className="card-category">بازدید از سایت</p>
+                <p className="card-category">بازدید کل</p>
                 <h3 className="card-title ir-r">{this.state.webVisit}</h3>
               </div>
             </div>

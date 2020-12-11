@@ -429,3 +429,14 @@ export async function deleteUser(adminUsername, userId) {
     headers
   );
 }
+export async function findByUserName(username) {
+  await userInfo();
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.get(API_ADDRESS_SERVICE + "auth/" + username, headers);
+}

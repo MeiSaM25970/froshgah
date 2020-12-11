@@ -20,8 +20,7 @@ export class Register extends Component {
     localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo");
   async componentDidMount() {
     if (this.userInfo) {
-      await this.setState({ userInfo: this.userInfo });
-      await console.log(JSON.parse(this.state.userInfo));
+      await this.setState({ userInfo: JSON.parse(this.userInfo) });
     } else {
       alert("ابتدا باید وارد شوید");
       window.location.replace("/login");
@@ -56,14 +55,20 @@ export class Register extends Component {
       await userService
         .register(userInfo)
         .then((response) => {
-          // sessionStorage.setItem("userInfo", JSON.stringify(response.data));
-          console.log(response);
+          console.log("111");
+          if (response.status === 400) {
+            this.setState({ usernameAvailable: true });
+            console.log("bbbb");
+          }
         })
         .catch((error) => {
+          console.log("2222");
           if (error.response.status === 400) {
             this.setState({ usernameAvailable: true });
+            console.log("sss");
           }
-        });
+        })
+        .finally(() => console.log("end"));
     } else {
       await this.setState({ isValid: false });
     }
@@ -129,6 +134,10 @@ export class Register extends Component {
                           {this.state.usernameIsEmpty ? (
                             <small className="d-block text-danger text-center">
                               نام کاربری اجباری است.
+                            </small>
+                          ) : this.state.usernameAvailable ? (
+                            <small className="d-block text-danger text-center">
+                              این نام کاربری قبلاً ثبت شده است.
                             </small>
                           ) : (
                             ""

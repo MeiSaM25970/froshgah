@@ -151,7 +151,6 @@ export class EditWeblog extends Component {
           !this.state.littleDesIsEmpty &&
           !this.state.titleIsEmpty
         ) {
-          console.log(this.state);
           userService
             .updateWeblog(weblogId, weblog)
             .then((response) => {

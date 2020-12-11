@@ -18,10 +18,6 @@ export class ChangePassword extends Component {
     isValid: false,
     oldPasswordErr: false,
   };
-  componentDidMount() {
-    this.userInfo =
-      localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo");
-  }
 
   changeHandler(e) {
     const password = {};
@@ -42,11 +38,10 @@ export class ChangePassword extends Component {
       this.userInfo
     ) {
       await this.setState({ isValid: true });
-      const userInfo = JSON.parse(this.userInfo);
       if (this.state.newPassword === this.state.configPassword) {
         this.setState({ configPasswordErr: false });
         const changePassword = {
-          username: userInfo.username,
+          username: this.userInfo.username,
           oldPassword: this.state.oldPassword,
           newPassword: this.state.newPassword,
         };
@@ -104,6 +99,13 @@ export class ChangePassword extends Component {
   }
 
   render() {
+    if (this.props.userInfo) {
+      this.userInfo = this.props.userInfo;
+    } else {
+      this.userInfo =
+        JSON.parse(localStorage.getItem("userInfo")) ||
+        JSON.parse(sessionStorage.getItem("userInfo"));
+    }
     return (
       <div className="content ir-r text-right">
         <div className="container-fluid">
@@ -112,7 +114,7 @@ export class ChangePassword extends Component {
               <div className="card">
                 <div className="card-header card-header-icon card-header-rose">
                   <div className="card-icon">
-                    <i className="material-icons">perm_identity</i>
+                    <i className="material-icons">vpn_key</i>
                   </div>
                   <h4 className="card-title ir-r">تغییر رمز عبور</h4>
                 </div>

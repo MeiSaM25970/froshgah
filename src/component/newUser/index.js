@@ -73,10 +73,8 @@ export class NewUser extends Component {
           });
         })
         .catch((error) => {
-          if (error.status) {
-            if (error.response.status === 400) {
-              this.setState({ usernameAvailable: true });
-            }
+          if (error.response.status === 400) {
+            this.setState({ usernameAvailable: true });
           } else console.log(error);
         });
     } else {
@@ -141,11 +139,11 @@ export class NewUser extends Component {
                         </div>
                         {this.state.usernameIsEmpty ? (
                           <small className="d-block text-danger text-center">
-                            وارد نمودن تلفن همراه اجباری است.
+                            تلفن همراه اجباری است.
                           </small>
                         ) : this.state.mobileTypeErr ? (
                           <small className="d-block text-danger text-center">
-                            شماره تلفن همراه اشتباه است.{" "}
+                            تلفن همراه اشتباه است.{" "}
                           </small>
                         ) : (
                           ""
@@ -194,6 +192,13 @@ export class NewUser extends Component {
                         </div>
                       </div>
                     </div>
+                    {this.state.usernameAvailable ? (
+                      <small className="d-block text-danger text-right">
+                        این تلفن همراه قبلاً ثبت شده است.
+                      </small>
+                    ) : (
+                      ""
+                    )}
                     <button type="submit" className="btn btn-rose pull-right">
                       {this.state.loading ? <Loading /> : " ذخیره"}
                     </button>

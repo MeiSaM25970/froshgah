@@ -12,10 +12,7 @@ export class Users extends Component {
     JSON.parse(localStorage.getItem("userInfo")) ||
     JSON.parse(sessionStorage.getItem("userInfo"));
   componentDidMount() {
-    if (this.userInfo.type === "superAdmin") {
-      console.log(this.userInfo);
-      this.fetchUsers(this.userInfo.username);
-    }
+    this.fetchUsers(this.userInfo.username);
   }
   fetchUsers(username) {
     userService
@@ -59,10 +56,6 @@ export class Users extends Component {
                   {this.state.usersNotFound ? (
                     <h2 className="ir-r mt-5 mb-5 text-center">
                       کاربری یافت نشد.
-                    </h2>
-                  ) : this.userInfo.type !== "superAdmin" ? (
-                    <h2 className="text-danger ir-r">
-                      این صفحه برای شما غیرفعال می باشد.
                     </h2>
                   ) : (
                     <MaterialTable
@@ -125,6 +118,14 @@ export class Users extends Component {
                       ]}
                       data={this.state.users}
                       actions={[
+                        {
+                          icon: "edit",
+                          tooltip: "ویرایش",
+                          onClick: (event, rowData) =>
+                            this.props.history.push(
+                              "/manageProfile/" + rowData.username
+                            ),
+                        },
                         {
                           icon: "delete",
                           tooltip: "حذف کاربر",

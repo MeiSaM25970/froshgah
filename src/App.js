@@ -31,6 +31,7 @@ import { WeblogListPage } from "./pages/weblogListPage";
 import { productStore } from "./component/product/redux/store";
 import { EditBlogPage } from "./pages/editBlogePage";
 import { UsersPage } from "./pages/usersPage";
+import { ManageProfilePage } from "./pages/manageProfile";
 
 class App extends Component {
   state = { data: [], miniSidebar: false };
@@ -85,7 +86,7 @@ class App extends Component {
                 path="/myprofile"
                 exact
                 render={(props) => (
-                  <Page title="محصولات">
+                  <Page title="ویرایش پروفایل">
                     <EditProfilePage {...props} />
                   </Page>
                 )}
@@ -158,7 +159,7 @@ class App extends Component {
                 path="/newUser"
                 exact
                 render={(props) => (
-                  <Page title="ورود">
+                  <Page title="کاربر جدید">
                     <NewUserPage {...props} />
                   </Page>
                 )}
@@ -167,7 +168,7 @@ class App extends Component {
                 path="/changePassword"
                 exact
                 render={(props) => (
-                  <Page title="ورود">
+                  <Page title="تغییر رمز عبور">
                     <ChangePasswordPage {...props} />
                   </Page>
                 )}
@@ -278,6 +279,15 @@ class App extends Component {
                 render={(props) => (
                   <Page title=" لیست مقالات ">
                     <WeblogListPage {...props} />
+                  </Page>
+                )}
+              />
+              <Route
+                path="/manageProfile/:username"
+                exact
+                render={(props) => (
+                  <Page title=" ویرایش پروفایل ">
+                    <ManageProfilePage {...props} />
                   </Page>
                 )}
               />

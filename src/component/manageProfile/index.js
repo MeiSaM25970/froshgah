@@ -2,20 +2,13 @@ import React, { Component } from "react";
 import { loginUserStore } from "../Login/redux";
 import * as userService from "../../service";
 import { Link } from "react-router-dom";
-import { API_ADDRESS_SERVICE } from "../../env";
 import validator from "validator";
-import Loading from "../loading";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+import { ChangePassword } from "../changePassword";
 
-export class EditProfile extends Component {
-  constructor(props) {
-    super(props);
-    this.uploadedImage = React.createRef(null);
-    this.imageUploader = React.createRef(null);
-  }
+export class ManageProfile extends Component {
   state = {
-    img: [],
     userInfo: {
       _id: "",
       firstName: "",
@@ -33,6 +26,7 @@ export class EditProfile extends Component {
       username: "",
       email: "",
       isComplete: false,
+      adminId: "",
     },
     emailIsEmptyErr: false,
     emailTypeErr: false,
@@ -42,11 +36,12 @@ export class EditProfile extends Component {
     disableButton: true,
   };
   async getUserInfo() {
-    const userInfoInStorage =
+    const adminInfo =
       localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo");
-    await this.setState({ userInfoInStorage: JSON.parse(userInfoInStorage) });
+    await this.setState({ adminInfo: JSON.parse(adminInfo) });
+    const username = this.props.match.params.username;
     userService
-      .fetchUserInfo(this.state.userInfoInStorage.username)
+      .findByUserName(username)
       .then((res) => {
         this.setState({ userInfo: res.data, loading: false });
       })
@@ -56,7 +51,7 @@ export class EditProfile extends Component {
     this.unsubscribe = loginUserStore.subscribe(() => {
       const arrayNumber = loginUserStore.getState().length;
       this.setState({
-        userInfoInStorage: loginUserStore.getState()[arrayNumber - 1],
+        adminInfo: loginUserStore.getState()[arrayNumber - 1],
       });
     });
     this.getUserInfo();
@@ -74,49 +69,7 @@ export class EditProfile extends Component {
       newUserInfo: { ...this.state.newUserInfo, ...user },
     });
   }
-  handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (!e.target.files.length) {
-      this.setState({ imgError: true });
-    } else {
-      this.setState({
-        disableButton: false,
-        img: file,
-        imgError: false,
-        imageUpload: true,
-      });
-    }
-    if (file) {
-      const reader = new FileReader();
-      const { current } = this.uploadedImage;
-      current.file = file;
-      reader.onload = (e) => {
-        current.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  async uploadFile() {
-    const uploadData = new FormData();
-
-    uploadData.append("myFile", this.state.img, this.state.img.name);
-
-    await userService
-      .uploadUserImg(uploadData)
-      .then((res) =>
-        this.setState({
-          newUserInfo: { ...this.state.newUserInfo, imgPath: res.data.path },
-        })
-      )
-      .catch((e) => {
-        console.log(e);
-        this.setState({ loading: false });
-      });
-  }
   createNewUserInfo() {
-    this.setState({
-      newUserInfo: { ...this.state.newUserInfo, _id: this.state.userInfo._id },
-    });
     if (!this.state.userInfo.username) {
       this.setState({
         newUserInfo: { ...this.state.newUserInfo, username: "" },
@@ -160,7 +113,13 @@ export class EditProfile extends Component {
         },
       });
     this.setState({
-      newUserInfo: { ...this.state.newUserInfo, isComplete: false },
+      newUserInfo: {
+        ...this.state.newUserInfo,
+        _id: this.state.userInfo._id,
+        adminId: this.state.adminInfo._id,
+        imgPath: this.state.userInfo.imgPath,
+        isComplete: true,
+      },
     });
   }
   async submitHandler(event) {
@@ -195,7 +154,7 @@ export class EditProfile extends Component {
             },
           });
         });
-    }
+    } else this.setState({ loading: false, submitErr: true });
   }
   async inputValidation() {
     const emailIsEmpty = validator.isEmpty(this.state.newUserInfo.email);
@@ -216,21 +175,7 @@ export class EditProfile extends Component {
     if (lastNameIsEmpty) {
       await this.setState({ lastNameISEmptyErr: true, loading: false });
     } else await this.setState({ lastNameISEmptyErr: false });
-    if (this.state.img.length === 0 && !this.state.userInfo.imgPath) {
-      await this.setState({ imgError: true, loading: false });
-    } else {
-      if (this.state.img.length === 0) {
-        this.setState({
-          newUserInfo: {
-            ...this.state.newUserInfo,
-            imgPath: this.state.userInfo.imgPath,
-          },
-        });
-      } else {
-        await this.setState({ imgError: false });
-        await this.uploadFile();
-      }
-    }
+
     if (
       !emailIsEmpty &&
       emailType &&
@@ -260,73 +205,10 @@ export class EditProfile extends Component {
                   <div className="card-icon">
                     <i className="material-icons">perm_identity</i>
                   </div>
-                  <h4 className="card-title ir-r">
-                    پروفایل من -
-                    {!this.state.userInfo.isComplete ? (
-                      <small className="category">
-                        پروفایل خود را تکمیل کنید
-                      </small>
-                    ) : (
-                      <small className="category">{this.fullName}</small>
-                    )}
-                  </h4>
+                  <h4 className="card-title ir-r">ویرایش پروفایل</h4>
                 </div>
                 <div className="card-body">
                   <form onSubmit={this.submitHandler.bind(this)}>
-                    <div className="row">
-                      <div
-                        style={{
-                          display: "block",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          height: "auto",
-                        }}
-                        className="mx-auto"
-                      >
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={this.handleImageUpload.bind(this)}
-                          ref={this.imageUploader}
-                          style={{
-                            display: "none",
-                          }}
-                        />
-                        <div onClick={() => this.imageUploader.current.click()}>
-                          <img
-                            src={
-                              this.state.userInfo.imgPath
-                                ? API_ADDRESS_SERVICE +
-                                  this.state.userInfo.imgPath
-                                : "/assets/img/placeholder.jpg"
-                            }
-                            ref={this.uploadedImage}
-                            className="mx-auto d-block"
-                            alt="تصویر"
-                            style={{
-                              width: "100px",
-                              position: "relative",
-                              borderRadius: "50%",
-                            }}
-                          />
-                        </div>
-                        {this.state.imgError ? (
-                          <div className="mt-3 text-danger text-center">
-                            {"انتخاب تصویر اجباری است."}
-                          </div>
-                        ) : !this.state.imageUpload ? (
-                          <div className="mt-3 text-warning text-center">
-                            {" تصویر خود را انتخاب کنید."}
-                          </div>
-                        ) : (
-                          <div className="text-success mt-3 text-center">
-                            تصویر با موفقیت انتخاب شد.
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
                     <div className="row">
                       <div className="col-md-3 mt-auto">
                         <div className="form-group bmd-form-group">
@@ -414,9 +296,11 @@ export class EditProfile extends Component {
                         <button
                           type="submit"
                           className="btn btn-rose pull-right"
-                          disabled={this.state.disableButton}
+                          disabled={
+                            this.state.disableButton || this.state.loading
+                          }
                         >
-                          {this.state.loading ? <Loading /> : " ذخیره"}
+                          {this.state.loading ? "صبر کنید..." : " ذخیره"}
                         </button>
                         <Link to="/dashboard">
                           <button className=" btn btn-mute" type="button">
@@ -432,6 +316,7 @@ export class EditProfile extends Component {
             </div>{" "}
           </div>
         </div>
+        <ChangePassword userInfo={this.state.userInfo} />
       </div>
     );
   }

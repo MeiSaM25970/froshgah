@@ -136,3 +136,10 @@
 .MuiButtonBase-root .MuiTableSortLabel-root {
   text-align: center !important;
 }
+.w-90-lg {
+  width: 90% !important;
+}
+.prices-webDetail {
+  width: 129%;
+  transform: translateX(45px);
+}

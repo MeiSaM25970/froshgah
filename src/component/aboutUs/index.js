@@ -51,8 +51,7 @@ export class AboutUs extends Component {
           });
         }
       })
-      .catch((err) => console.log(err))
-      .finally(() => console.log(this.state));
+      .catch((err) => console.log(err));
   }
   async submitHandler(e) {
     await e.preventDefault();

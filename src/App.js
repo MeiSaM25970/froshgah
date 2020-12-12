@@ -32,6 +32,7 @@ import { productStore } from "./component/product/redux/store";
 import { EditBlogPage } from "./pages/editBlogePage";
 import { UsersPage } from "./pages/usersPage";
 import { ManageProfilePage } from "./pages/manageProfile";
+import { SideBar } from "./component/dashboard";
 
 class App extends Component {
   state = { data: [], miniSidebar: false };
@@ -78,6 +79,7 @@ class App extends Component {
           }
         >
           <BrowserRouter>
+            <SideBar />
             <Switch>
               <Route path="/" exact>
                 <HomePage />

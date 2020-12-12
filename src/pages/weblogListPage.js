@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { SideBar, MainNavbar } from "../component/dashboard";
+import { MainNavbar } from "../component/dashboard";
 import { itemsStore } from "../component/weblog/redux/store";
 import { WeblogList } from "../component/weblog/weblogList";
 import * as userService from "../service";
@@ -23,7 +23,6 @@ export class WeblogListPage extends Component {
   render() {
     return (
       <Fragment>
-        <SideBar {...this.props} />
         <div className="main-panel ps ps--active-y">
           <MainNavbar {...this.props} />
 

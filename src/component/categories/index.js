@@ -16,6 +16,9 @@ export class Categories extends Component {
     editTitle: "",
     newCategoryErr: false,
     edit: null,
+    loading: false,
+    deleteLoading: false,
+    updateLoading: false,
   };
   dangerClassName = "form-group bmd-form-group has-danger is-focused";
   normalClassName = "form-group bmd-form-group";
@@ -43,8 +46,12 @@ export class Categories extends Component {
           this.fetchCategories();
           this.setState({ addCategory: false });
         })
-        .catch((err) => console.log(err));
-    }
+        .catch((err) => {
+          this.configError();
+          console.log(err);
+        })
+        .finally(() => this.setState({ loading: false }));
+    } else this.setState({ loading: false });
   }
   componentDidMount() {
     this.fetchCategories();
@@ -52,20 +59,27 @@ export class Categories extends Component {
   validation() {
     const titleIsEmpty = validator.isEmpty(this.state.title);
     if (titleIsEmpty) {
-      this.setState({ titleError: true, isValid: false });
+      this.setState({ titleError: true, isValid: false, loading: true });
     } else this.setState({ titleError: false, isValid: true });
   }
   async updateCategory(category) {
     const newCategoryIsEmpty = validator.isEmpty(this.state.editTitle);
     if (newCategoryIsEmpty) {
-      await this.setState({ newCategoryErr: true });
+      await this.setState({ newCategoryErr: true, updateLoading: false });
     } else {
       await this.setState({ newCategoryErr: false });
       const newCategory = { title: this.state.editTitle };
-      userService.updateCategory(category._id, newCategory).then(async () => {
-        await this.fetchCategories();
-        await this.setState({ edit: null });
-      });
+      userService
+        .updateCategory(category._id, newCategory)
+        .then(async () => {
+          await this.fetchCategories();
+          await this.setState({ edit: null });
+        })
+        .catch((err) => {
+          this.configError();
+          console.log(err);
+        })
+        .finally(() => this.setState({ updateLoading: false }));
     }
   }
 
@@ -94,12 +108,17 @@ export class Categories extends Component {
               onClick={async () => {
                 await userService
                   .deleteCategory(category._id)
-                  .then(() => {
-                    this.setState({ feature: [] });
-                    this.fetchCategories();
+                  .then(async () => {
+                    await this.setState({ feature: [] });
+                    await this.fetchCategories();
+                    onClose();
                   })
-                  .catch((err) => console.log(err));
-                onClose();
+                  .catch(async (err) => {
+                    await this.configError();
+                    await onClose();
+                    console.log(err);
+                  })
+                  .finally(() => this.setState({ deleteLoading: false }));
               }}
             >
               بله ، پاک کن!
@@ -117,7 +136,30 @@ export class Categories extends Component {
   };
   submitHandler(e) {
     e.preventDefault();
+    this.setState({ loading: true });
     this.addCategory();
+  }
+  configError() {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className="custom-ui text-right text-danger ">
+            <i className="material-icons-outlined">error</i>
+
+            <p className="ir-r">خطا! دوباره امتحان کنید.</p>
+
+            <button
+              className="btn btn-danger"
+              onClick={() => {
+                onClose();
+              }}
+            >
+              باشه
+            </button>
+          </div>
+        );
+      },
+    });
   }
   render() {
     return this.state.feature ? (
@@ -138,10 +180,10 @@ export class Categories extends Component {
             >
               <div className="row ">
                 <label className="col-sm-2 col-form-label t-r"> موضوعات:</label>
-                <div className="col-sm-10 mt-5">
+                <div className="col-sm-10 ">
                   <div className="row mb-5">
                     <div
-                      className={this.normalClassName + " mt-4 mx-auto "}
+                      className={this.normalClassName + " mt-4  "}
                       style={{ overflowX: "auto" }}
                     >
                       <div className="card-body ">
@@ -213,25 +255,33 @@ export class Categories extends Component {
                                       {this.state.edit === index ? (
                                         <Link
                                           className="text-success"
-                                          onClick={() =>
-                                            this.updateCategory(feature)
-                                          }
+                                          onClick={() => {
+                                            this.setState({
+                                              updateLoading: true,
+                                            });
+                                            this.updateCategory(feature);
+                                          }}
                                           to="#"
                                         >
                                           <span className="material-icons ">
-                                            save
+                                            {this.state.updateLoading
+                                              ? "hourglass_full"
+                                              : "save"}
                                           </span>
                                         </Link>
                                       ) : (
                                         <Link
                                           className="text-danger"
                                           to="#"
-                                          onClick={() =>
-                                            this.deleteCategory(feature)
-                                          }
+                                          onClick={() => {
+                                            this.setState({
+                                              deleteLoading: true,
+                                            });
+                                            this.deleteCategory(feature);
+                                          }}
                                         >
                                           <span className="material-icons ">
-                                            delete
+                                            {"delete"}
                                           </span>
                                         </Link>
                                       )}
@@ -259,10 +309,14 @@ export class Categories extends Component {
                           <div className="mx-auto d-block">
                             <button
                               className="btn btn-success mr-5"
-                              // onClick={() => this.addCategory()}
                               type="submit"
+                              disabled={this.state.loading}
                             >
-                              ذخیره
+                              {this.state.loading ? (
+                                <Loading size={15} />
+                              ) : (
+                                "ذخیره"
+                              )}
                             </button>
                             <button
                               className="btn btn-danger "
@@ -287,7 +341,7 @@ export class Categories extends Component {
                     <button
                       type="button"
                       disabled={this.state.addCategory}
-                      className="btn btn-primary mx-auto"
+                      className="btn btn-primary "
                       onClick={() => this.setState({ addCategory: true })}
                     >
                       موضوع جدید
@@ -300,7 +354,11 @@ export class Categories extends Component {
         </div>
       </div>
     ) : (
-      <Loading />
+      <div style={{ marginTop: 200 }} className="container">
+        <div className=" d-block mx-auto" style={{ width: 50 }}>
+          <Loading />
+        </div>
+      </div>
     );
   }
 }

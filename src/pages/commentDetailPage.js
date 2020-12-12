@@ -1,12 +1,11 @@
 import React, { Component, Fragment } from "react";
 import { CommentDetail } from "../component/commentDetail";
-import { MainNavbar, SideBar } from "../component/dashboard";
+import { MainNavbar } from "../component/dashboard";
 
 export class CommentDetailPage extends Component {
   render() {
     return (
       <Fragment>
-        <SideBar {...this.props} />
         <div className="main-panel ps ps--active-y">
           <MainNavbar {...this.props} />
           <CommentDetail {...this.props} />

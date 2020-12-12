@@ -416,7 +416,11 @@ export class EditProfile extends Component {
                           className="btn btn-rose pull-right"
                           disabled={this.state.disableButton}
                         >
-                          {this.state.loading ? <Loading /> : " ذخیره"}
+                          {this.state.loading ? (
+                            <Loading size={15} />
+                          ) : (
+                            " ذخیره"
+                          )}
                         </button>
                         <Link to="/dashboard">
                           <button className=" btn btn-mute" type="button">

@@ -5,6 +5,7 @@ import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import { productStore } from "./redux/store";
 import { addProduct } from "./redux/actions";
+import Loading from "../loading";
 export class ProductRegistration extends Component {
   constructor(props) {
     super(props);
@@ -36,6 +37,7 @@ export class ProductRegistration extends Component {
   history = this.props.history;
   submitHandler = async (e) => {
     await e.preventDefault();
+    this.setState({ loading: true });
     await this.productValidation();
     await this.featureValidation();
     if (
@@ -58,6 +60,7 @@ export class ProductRegistration extends Component {
       userService
         .createProduct(product)
         .then((res) => {
+          this.setState({ loading: false });
           if (res.status === 200) {
             confirmAlert({
               customUI: ({ onClose }) => {
@@ -122,7 +125,7 @@ export class ProductRegistration extends Component {
       .then((res) => this.setState({ imgPath: res.data.path }))
       .catch((e) => {
         console.log(e);
-        this.setState({ load: false });
+        this.setState({ loading: false });
       });
   }
   handleImageUpload = (e) => {
@@ -149,16 +152,16 @@ export class ProductRegistration extends Component {
     const description = await validator.isEmpty(this.state.description);
 
     if (product) {
-      await this.setState({ productError: true });
+      await this.setState({ productError: true, loading: false });
     } else await this.setState({ productError: false });
     if (price) {
-      await await this.setState({ priceError: true });
+      await await this.setState({ priceError: true, loading: false });
     } else await this.setState({ priceError: false });
     if (description) {
-      await await this.setState({ descriptionError: true });
+      await await this.setState({ descriptionError: true, loading: false });
     } else await this.setState({ descriptionError: false });
     if (this.state.img.length === 0) {
-      await this.setState({ imgError: true });
+      await this.setState({ imgError: true, loading: false });
     } else {
       await this.setState({ imgError: false });
     }
@@ -168,10 +171,10 @@ export class ProductRegistration extends Component {
       const title = await validator.isEmpty(this.feature[i].title);
       const description = await validator.isEmpty(this.feature[i].description);
       if (title) {
-        await this.setState({ titleError: true });
+        await this.setState({ titleError: true, loading: false });
       } else await this.setState({ titleError: false });
       if (description) {
-        await await this.setState({ featureDesErr: true });
+        await await this.setState({ featureDesErr: true, loading: false });
       } else await this.setState({ featureDesErr: false });
     }
   };
@@ -306,7 +309,7 @@ export class ProductRegistration extends Component {
                         />
                         <label className="des-feature1">شرح: </label>
                         <textarea
-                          rows="2"
+                          rows="4"
                           type="text"
                           className="form-control input-feature"
                           placeholder=""
@@ -390,6 +393,7 @@ export class ProductRegistration extends Component {
                   >
                     <textarea
                       type="text"
+                      rows="10"
                       className="form-control"
                       placeholder=""
                       name="description"
@@ -406,11 +410,19 @@ export class ProductRegistration extends Component {
                 </div>
               </div>
               <div className="row">
-                <button type="submit" className="btn btn-success mx-auto">
-                  <span className="btn-label">
-                    <i className="material-icons">check</i>
-                  </span>
-                  ثبت محصول
+                <button
+                  type="submit"
+                  className="btn btn-success mx-auto"
+                  disabled={this.state.loading}
+                >
+                  {this.state.loading ? (
+                    <Loading size={15} />
+                  ) : (
+                    <span className="btn-label">
+                      <i className="material-icons">check</i>
+                      ثبت محصول
+                    </span>
+                  )}
                   <div className="ripple-container"></div>
                 </button>
               </div>

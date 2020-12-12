@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from "react";
 import { MainDashboard, MainNavbar } from "../component/dashboard";
-import { SideBar } from "../component/dashboard/sidebar";
 
 export class DashboardPage extends Component {
   state = {};
@@ -14,7 +13,6 @@ export class DashboardPage extends Component {
   render() {
     return (
       <Fragment>
-        <SideBar {...this.props} />
         <div className="main-panel ps ps--active-y">
           <MainNavbar {...this.props} />
           <MainDashboard userInfo={this.props.userInfo} />

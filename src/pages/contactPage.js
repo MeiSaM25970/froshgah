@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { Contact } from "../component/contact";
-import { MainNavbar, SideBar } from "../component/dashboard";
+import { MainNavbar } from "../component/dashboard";
 import * as userService from "../service";
 
 export class ContactPage extends Component {
@@ -16,7 +16,6 @@ export class ContactPage extends Component {
   render() {
     return (
       <Fragment>
-        <SideBar {...this.props} />
         <div className="main-panel ps ps--active-y">
           <MainNavbar {...this.props} />
           <Contact contact={this.state.contact} {...this.props} />

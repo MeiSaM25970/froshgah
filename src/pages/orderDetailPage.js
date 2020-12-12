@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { MainNavbar, SideBar } from "../component/dashboard";
+import { MainNavbar } from "../component/dashboard";
 import { OrderDetail } from "../component/orderDetail";
 import * as userService from "../service";
 
@@ -13,7 +13,6 @@ export class OrderDetailPage extends Component {
   render() {
     return (
       <Fragment>
-        <SideBar {...this.props} />
         <div className="main-panel ps ps--active-y">
           <MainNavbar {...this.props} />
           <OrderDetail order={this.state.order} {...this.props} />

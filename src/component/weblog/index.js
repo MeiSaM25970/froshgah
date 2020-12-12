@@ -88,10 +88,9 @@ export class Weblog extends Component {
   async submitHandler(e) {
     await e.preventDefault();
     await this.validateFrom();
+    console.log(this.state);
     if (this.state.isValid) {
-      if (!this.state.editMode) {
-        await this.uploadFile();
-      }
+      await this.uploadFile();
 
       const weblog = {
         title: this.state.title,
@@ -134,7 +133,8 @@ export class Weblog extends Component {
             })
             .catch((error) => {
               console.log(error);
-            });
+            })
+            .finally(() => this.setState({ loading: false }));
         }
       } else {
         const weblogId = this.props.match.params.id;
@@ -165,10 +165,12 @@ export class Weblog extends Component {
           })
           .catch((error) => {
             console.log(error);
-          });
+          })
+          .finally(() => this.setState({ loading: false }));
       }
     } else {
       this.setState({ loading: false, isValid: false });
+      this.scrollTop();
     }
   }
   handleImageUpload = (e) => {
@@ -195,17 +197,17 @@ export class Weblog extends Component {
     }
   };
   async uploadFile() {
-    const uploadData = new FormData();
-
-    uploadData.append("myFile", this.state.img, this.state.img.name);
-
-    await userService
-      .uploadWeblogImg(uploadData)
-      .then((res) => this.setState({ imgPath: res.data.path }))
-      .catch((e) => {
-        console.log(e);
-        this.setState({ loading: false });
-      });
+    if (this.state.img.length > 0) {
+      const uploadData = new FormData();
+      uploadData.append("myFile", this.state.img, this.state.img.name);
+      await userService
+        .uploadWeblogImg(uploadData)
+        .then((res) => this.setState({ imgPath: res.data.path }))
+        .catch((e) => {
+          console.log(e);
+          this.setState({ loading: false });
+        });
+    } else this.setState({ imgError: true });
   }
   async validateFrom() {
     const title = await validator.isEmpty(this.state.title);
@@ -215,28 +217,28 @@ export class Weblog extends Component {
     if (title) {
       if (this.state.editMode) {
         this.setState({ title: this.state.editWeblog.title });
-      } else await this.setState({ titleIsEmpty: true });
+      } else await this.setState({ titleIsEmpty: true, loading: false });
     } else await this.setState({ titleIsEmpty: false });
     if (description) {
       if (this.state.editMode) {
         this.setState({ description: this.state.editWeblog.description });
-      } else await this.setState({ descriptionIsEmpty: true });
+      } else await this.setState({ descriptionIsEmpty: true, loading: false });
     } else await this.setState({ descriptionIsEmpty: false });
     if (littleDes) {
       if (this.state.editMode) {
         this.setState({ littleDes: this.state.editWeblog.littleDes });
-      } else await this.setState({ littleDesIsEmpty: true });
+      } else await this.setState({ littleDesIsEmpty: true, loading: false });
     } else await this.setState({ littleDesIsEmpty: false });
     if (category) {
       if (this.state.editMode) {
         this.setState({ category: this.state.editWeblog.category });
-      } else await this.setState({ categoryIsEmpty: true });
+      } else await this.setState({ categoryIsEmpty: true, loading: false });
     } else await this.setState({ categoryIsEmpty: false });
 
     if (this.state.img.length === 0) {
       if (this.state.editMode) {
         this.setState({ imgPath: this.state.editWeblog.imgPath });
-      } else await this.setState({ imgError: true });
+      } else await this.setState({ imgError: true, loading: false });
     } else {
       if (this.state.editMode) {
         await this.uploadFile();
@@ -254,7 +256,7 @@ export class Weblog extends Component {
     } else {
       if (this.state.editMode) {
         this.setState({ isValid: true });
-      } else this.setState({ isValid: false });
+      } else this.setState({ isValid: false, loading: false });
     }
   }
 
@@ -264,7 +266,12 @@ export class Weblog extends Component {
   async selectHandler(e) {
     await this.setState({ category: e.target.value, enableSave: true });
   }
-
+  scrollTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
   render() {
     return this.state.categories ? (
       <div className="content ir-r text-right">

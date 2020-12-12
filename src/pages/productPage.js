@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { ProductList } from "../component/product";
-import { SideBar, MainNavbar } from "../component/dashboard";
+import { MainNavbar } from "../component/dashboard";
 
 export class ProductPage extends Component {
   state = {};
@@ -14,7 +14,6 @@ export class ProductPage extends Component {
   render() {
     return (
       <Fragment>
-        <SideBar {...this.props} />
         <div className="main-panel ps ps--active-y">
           <MainNavbar {...this.props} />
 

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { API_ADDRESS_SERVICE } from "../../env";
 import * as userService from "../../service";
-import Loading from "../loading";
 
 export class SideBar extends Component {
   state = {
@@ -32,7 +31,6 @@ export class SideBar extends Component {
     JSON.parse(localStorage.getItem("userInfo")) ||
     JSON.parse(sessionStorage.getItem("userInfo"));
   componentDidMount() {
-    this.activeSidebar();
     userService
       .fetchUserInfo(this.userInfo.username)
       .then((res) => this.setState({ userInfo: res.data }))
@@ -40,58 +38,8 @@ export class SideBar extends Component {
   }
   async logout() {
     this.userInfo = localStorage.clear() || sessionStorage.clear();
-    this.props.history.push("/login");
   }
-  componentWillReceiveProps(newProps) {
-    if (this.props.location.pathname !== newProps.location.pathname) {
-      this.setState({ newProps: "Received" });
-      this.activeSidebar();
-    }
-  }
-  activeSidebar() {
-    switch (this.props.match.path) {
-      case "/dashboard":
-        return this.setState({ activeSidebar: { dashboard: true } });
-      case "/myprofile":
-        return this.setState({ activeSidebar: { myprofile: true } });
-      case "/product":
-        return this.setState({ activeSidebar: { product: true } });
-      case "/product/:id":
-        return this.setState({ activeSidebar: { productId: true } });
-      case "/productregister":
-        return this.setState({ activeSidebar: { productRegister: true } });
-      case "/newUser":
-        return this.setState({ activeSidebar: { newUser: true } });
-      case "/changePassword":
-        return this.setState({ activeSidebar: { changePassword: true } });
-      case "/categories":
-        return this.setState({ activeSidebar: { categories: true } });
-      case "/order":
-        return this.setState({ activeSidebar: { order: true } });
-      case "/order/:id":
-        return this.setState({ activeSidebar: { orderId: true } });
-      case "/about":
-        return this.setState({ activeSidebar: { about: true } });
-      case "/contact":
-        return this.setState({ activeSidebar: { message: true } });
-      case "/contact/:id":
-        return this.setState({ activeSidebar: { contactDetail: true } });
-      case "/newblog":
-        return this.setState({ activeSidebar: { newBlog: true } });
-      case "/comments":
-        return this.setState({ activeSidebar: { comments: true } });
-      case "/comment/:id":
-        return this.setState({ activeSidebar: { commentDetail: true } });
-      case "/weblogs":
-        return this.setState({ activeSidebar: { weblogs: true } });
-      case "/weblogs/:id":
-        return this.setState({ activeSidebar: { editWeblog: true } });
-      case "/users":
-        return this.setState({ activeSidebar: { users: true } });
-      default:
-        return this.state.activeSidebar;
-    }
-  }
+
   render() {
     return this.state.userInfo ? (
       <div
@@ -137,14 +85,24 @@ export class SideBar extends Component {
               </a>
               <div className="collapse " id="collapseExample">
                 <ul className="nav ">
-                  <Link to="/myprofile">
+                  <Link
+                    to="/myprofile"
+                    onClick={() =>
+                      this.setState({ activeSidebar: { myprofile: true } })
+                    }
+                  >
                     <li className="nav-item ">
                       <span className="nav-link" style={{ fontSize: 13 }}>
                         <span className="sidebar-normal"> پروفایل من </span>
                       </span>
                     </li>
                   </Link>
-                  <Link to="/newUser">
+                  <Link
+                    to="/newUser"
+                    onClick={() =>
+                      this.setState({ activeSidebar: { newUser: true } })
+                    }
+                  >
                     <li className="nav-item">
                       <span className="nav-link" style={{ fontSize: 13 }}>
                         <span className="sidebar-normal">
@@ -154,14 +112,28 @@ export class SideBar extends Component {
                       </span>
                     </li>
                   </Link>
-                  <Link to="/changePassword">
+                  <Link
+                    to="/changePassword"
+                    onClick={() =>
+                      this.setState({
+                        activeSidebar: { changePassword: true },
+                      })
+                    }
+                  >
                     <li className="nav-item">
                       <span className="nav-link" style={{ fontSize: 13 }}>
                         <span className="sidebar-normal"> تغییر رمز عبور </span>
                       </span>
                     </li>
                   </Link>
-                  <Link onClick={() => this.logout()} to="#">
+                  <Link
+                    onClick={() =>
+                      this.logout().then(() =>
+                        window.location.replace("/login")
+                      )
+                    }
+                    to="#"
+                  >
                     <li className="nav-item">
                       <span className="nav-link" style={{ fontSize: 13 }}>
                         <span className="sidebar-normal">
@@ -183,50 +155,17 @@ export class SideBar extends Component {
                   : "nav-item"
               }
             >
-              <Link className="nav-link" to="/dashboard">
+              <Link
+                className="nav-link"
+                to="/dashboard"
+                onClick={() =>
+                  this.setState({ activeSidebar: { dashboard: true } })
+                }
+              >
                 <i className="material-icons">dashboard</i>
                 <p> داشبورد </p>
               </Link>
             </li>
-            {/* <li className="nav-item ">
-              <a
-                className="nav-link collapsed"
-                data-toggle="collapse"
-                href="#mapsExamples"
-                aria-expanded="false"
-              >
-                <i className="material-icons">image</i>
-                <p>
-                  {" "}
-                  مدیریت صفحات
-                  <b className="caret"></b>
-                </p>
-              </a>
-              <div className="collapse" id="mapsExamples">
-                <ul className="nav">
-                  <li className="nav-item ">
-                    <Link className="nav-link" to="/manage-product-a-page">
-                      <span className="sidebar-normal"> محصول یک </span>
-                    </Link>
-                  </li>
-                  <li className="nav-item ">
-                    <a
-                      className="nav-link"
-                      href="../examples/maps/fullscreen.html"
-                    >
-                      <span className="sidebar-mini"> FSM </span>
-                      <span className="sidebar-normal"> Full Screen Map </span>
-                    </a>
-                  </li>
-                  <li className="nav-item ">
-                    <a className="nav-link" href="../examples/maps/vector.html">
-                      <span className="sidebar-mini"> VM </span>
-                      <span className="sidebar-normal"> Vector Map </span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </li> */}
             <li
               className={
                 this.state.activeSidebar.product ||
@@ -271,7 +210,13 @@ export class SideBar extends Component {
                         : "nav-item"
                     }
                   >
-                    <Link className="nav-link" to="/product">
+                    <Link
+                      className="nav-link"
+                      to="/product"
+                      onClick={() =>
+                        this.setState({ activeSidebar: { product: true } })
+                      }
+                    >
                       <span className="sidebar-normal"> لیست محصولات </span>
                     </Link>
                   </li>
@@ -282,7 +227,15 @@ export class SideBar extends Component {
                         : "nav-item"
                     }
                   >
-                    <Link className="nav-link" to="/productregister">
+                    <Link
+                      className="nav-link"
+                      to="/productregister"
+                      onClick={() =>
+                        this.setState({
+                          activeSidebar: { productRegister: true },
+                        })
+                      }
+                    >
                       <span className="sidebar-normal">ثبت محصول جدید </span>
                     </Link>
                   </li>
@@ -331,7 +284,13 @@ export class SideBar extends Component {
                         : "nav-item"
                     }
                   >
-                    <Link className="nav-link" to="/order">
+                    <Link
+                      className="nav-link"
+                      to="/order"
+                      onClick={() =>
+                        this.setState({ activeSidebar: { order: true } })
+                      }
+                    >
                       <span className="sidebar-normal"> سفارشات </span>
                     </Link>
                   </li>
@@ -386,7 +345,13 @@ export class SideBar extends Component {
                         : "nav-item"
                     }
                   >
-                    <Link className="nav-link" to="/newblog">
+                    <Link
+                      className="nav-link"
+                      to="/newblog"
+                      onClick={() =>
+                        this.setState({ activeSidebar: { newBlog: true } })
+                      }
+                    >
                       <span className="sidebar-normal"> مقاله جدید </span>
                     </Link>
                   </li>
@@ -397,7 +362,13 @@ export class SideBar extends Component {
                         : "nav-item"
                     }
                   >
-                    <Link to="/categories" className="nav-link">
+                    <Link
+                      to="/categories"
+                      className="nav-link"
+                      onClick={() =>
+                        this.setState({ activeSidebar: { categories: true } })
+                      }
+                    >
                       <span className="sidebar-normal"> موضوعات </span>
                     </Link>
                   </li>
@@ -409,7 +380,13 @@ export class SideBar extends Component {
                         : "nav-item"
                     }
                   >
-                    <Link to="/weblogs" className="nav-link">
+                    <Link
+                      to="/weblogs"
+                      className="nav-link"
+                      onClick={() =>
+                        this.setState({ activeSidebar: { weblogs: true } })
+                      }
+                    >
                       <span className="sidebar-normal"> مقالات </span>
                     </Link>
                   </li>
@@ -458,47 +435,14 @@ export class SideBar extends Component {
                         : "nav-item"
                     }
                   >
-                    <Link className="nav-link" to="/contact">
+                    <Link
+                      className="nav-link"
+                      to="/contact"
+                      onClick={() =>
+                        this.setState({ activeSidebar: { message: true } })
+                      }
+                    >
                       <span className="sidebar-normal"> تماس با ما</span>
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </li>
-            <li
-              className={
-                this.state.activeSidebar.about ? "nav-item active" : "nav-item"
-              }
-            >
-              <a
-                className="nav-link collapsed"
-                data-toggle="collapse"
-                href="#aboutUs"
-                aria-expanded={this.state.activeSidebar.about}
-              >
-                <i className="material-icons">info </i>
-                <p>
-                  {" "}
-                  درباره ما
-                  <b className="caret"></b>
-                </p>
-              </a>
-              <div
-                className={
-                  this.state.activeSidebar.about ? "collapse show" : "collapse"
-                }
-                id="aboutUs"
-              >
-                <ul className="nav">
-                  <li
-                    className={
-                      this.state.activeSidebar.about
-                        ? "nav-item active"
-                        : "nav-item"
-                    }
-                  >
-                    <Link className="nav-link" to="/about">
-                      <span className="sidebar-normal"> تنظیمات </span>
                     </Link>
                   </li>
                 </ul>
@@ -546,7 +490,13 @@ export class SideBar extends Component {
                         : "nav-item"
                     }
                   >
-                    <Link className="nav-link" to="/comments">
+                    <Link
+                      className="nav-link"
+                      to="/comments"
+                      onClick={() =>
+                        this.setState({ activeSidebar: { comments: true } })
+                      }
+                    >
                       <span className="sidebar-normal"> مدیریت نظرات </span>
                     </Link>
                   </li>
@@ -585,8 +535,57 @@ export class SideBar extends Component {
                         : "nav-item"
                     }
                   >
-                    <Link className="nav-link" to="/users">
+                    <Link
+                      className="nav-link"
+                      to="/users"
+                      onClick={() =>
+                        this.setState({ activeSidebar: { users: true } })
+                      }
+                    >
                       <span className="sidebar-normal"> مدیریت کاربران </span>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li
+              className={
+                this.state.activeSidebar.about ? "nav-item active" : "nav-item"
+              }
+            >
+              <a
+                className="nav-link collapsed"
+                data-toggle="collapse"
+                href="#about"
+                aria-expanded={this.state.activeSidebar.about}
+              >
+                <i className="material-icons">info </i>
+                <p>
+                  درباره ما <b className="caret"></b>
+                </p>
+              </a>
+              <div
+                className={
+                  this.state.activeSidebar.about ? "collapse show" : "collapse"
+                }
+                id="about"
+              >
+                <ul className="nav">
+                  <li
+                    className={
+                      this.state.activeSidebar.about
+                        ? "nav-item active"
+                        : "nav-item"
+                    }
+                  >
+                    <Link
+                      className="nav-link"
+                      to="/about"
+                      onClick={() =>
+                        this.setState({ activeSidebar: { about: true } })
+                      }
+                    >
+                      <span className="sidebar-normal">تنظیمات </span>
                     </Link>
                   </li>
                 </ul>
@@ -614,35 +613,20 @@ export class SideBar extends Component {
             ></div>
           </div>
         </div>
-        <div
-          className="ps__rail-x"
-          // style={{ left: "0px", top: "0px" }}
-        >
-          <div
-            className="ps__thumb-x"
-            tabIndex="0"
-            // style={{ left: "0px", width: "0px" }}
-          ></div>
+        <div className="ps__rail-x">
+          <div className="ps__thumb-x" tabIndex="0"></div>
         </div>
-        <div
-          className="ps__rail-y"
-          // style={{ top: "0px", left: "0px" }}
-        >
+        <div className="ps__rail-y">
           <div
             className="ps__thumb-y"
             tabIndex="0"
             // style={{ top: "0px", height: "0px" }}
           ></div>
         </div>
-        <div
-          className="sidebar-background"
-          // style={{
-          //   backgroundImage: "url(&quot;../assets/img/sidebar-1.jpg&quot)",
-          // }}
-        ></div>
+        <div className="sidebar-background"></div>
       </div>
     ) : (
-      <Loading />
+      <div></div>
     );
   }
 }

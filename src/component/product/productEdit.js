@@ -32,6 +32,7 @@ export class ProductEdit extends Component {
     editFeature: false,
     data: {},
     feature: [{ title: "", description: `` }],
+    loading: false,
   };
   dangerClassName = "form-group bmd-form-group has-danger is-focused";
   normalClassName = "form-group bmd-form-group";
@@ -55,6 +56,7 @@ export class ProductEdit extends Component {
   }
   submitHandler = async (e) => {
     await e.preventDefault();
+    await this.setState({ loading: true });
     await this.productValidation();
     await this.featureValidation();
     if (
@@ -75,9 +77,11 @@ export class ProductEdit extends Component {
         img: this.state.imgPath,
         feature: this.state.feature,
       };
+      const productId = this.props.match.params.id;
       userService
-        .createProduct(product)
+        .EditProduct(productId, product)
         .then((res) => {
+          this.setState({ loading: false });
           if (res.status === 200) {
             confirmAlert({
               customUI: ({ onClose }) => {
@@ -103,7 +107,7 @@ export class ProductEdit extends Component {
             console.log("fail");
           }
         })
-        .catch(this.setState({ isDone: false }));
+        .catch(() => this.setState({ isDone: false, loading: false }));
     } else await this.setState({ isValid: false });
     if (!this.state.isValid) {
       this.scrollTop();
@@ -140,7 +144,7 @@ export class ProductEdit extends Component {
       .then((res) => this.setState({ imgPath: res.data.path }))
       .catch((e) => {
         console.log(e);
-        this.setState({ load: false });
+        this.setState({ loading: false });
       });
   }
   handleImageUpload = (e) => {
@@ -167,13 +171,13 @@ export class ProductEdit extends Component {
     const description = await validator.isEmpty(this.state.description);
 
     if (product) {
-      await this.setState({ productError: true });
+      await this.setState({ productError: true, loading: false });
     } else await this.setState({ productError: false });
     if (price) {
-      await await this.setState({ priceError: true });
+      await await this.setState({ priceError: true, loading: false });
     } else await this.setState({ priceError: false });
     if (description) {
-      await await this.setState({ descriptionError: true });
+      await await this.setState({ descriptionError: true, loading: false });
     } else await this.setState({ descriptionError: false });
   };
   featureValidation = async () => {
@@ -183,10 +187,10 @@ export class ProductEdit extends Component {
         this.state.feature[i].description
       );
       if (title) {
-        await this.setState({ titleError: true });
+        await this.setState({ titleError: true, loading: false });
       } else await this.setState({ titleError: false });
       if (description) {
-        await await this.setState({ featureDesErr: true });
+        await await this.setState({ featureDesErr: true, loading: false });
       } else await this.setState({ featureDesErr: false });
     }
   };
@@ -327,7 +331,7 @@ export class ProductEdit extends Component {
                         />
                         <label className="des-feature1">شرح: </label>
                         <textarea
-                          rows="2"
+                          rows="4"
                           type="text"
                           className="form-control input-feature"
                           placeholder=""
@@ -415,6 +419,7 @@ export class ProductEdit extends Component {
                       type="text"
                       className="form-control"
                       placeholder=""
+                      rows="10"
                       name="description"
                       defaultValue={this.state.data.description}
                       onChange={this.changeHandler.bind(this)}
@@ -430,12 +435,19 @@ export class ProductEdit extends Component {
                 </div>
               </div>
               <div className="row">
-                <button type="submit" className="btn btn-success mx-auto">
-                  <span className="btn-label">
-                    <i className="material-icons">check</i>
-                  </span>
-                  ویراش محصول
-                  <div className="ripple-container"></div>
+                <button
+                  type="submit"
+                  className="btn btn-success mx-auto"
+                  disabled={this.state.loading}
+                >
+                  {this.state.loading ? (
+                    <Loading size={15} />
+                  ) : (
+                    <span className="btn-label">
+                      <i className="material-icons">check</i>
+                      ویراش محصول
+                    </span>
+                  )}
                 </button>
               </div>
             </form>
@@ -443,7 +455,11 @@ export class ProductEdit extends Component {
         </div>
       </div>
     ) : (
-      <Loading />
+      <div style={{ marginTop: 200 }} className="container">
+        <div className=" d-block mx-auto" style={{ width: 50 }}>
+          <Loading />
+        </div>
+      </div>
     );
   }
 }

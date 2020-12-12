@@ -5,9 +5,6 @@ import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import { Link } from "react-router-dom";
 import Loading from "../loading";
-
-import { API_ADDRESS_SERVICE } from "../../env";
-
 import { Editor } from "@tinymce/tinymce-react";
 
 export class Weblog extends Component {
@@ -26,7 +23,6 @@ export class Weblog extends Component {
     edit: false,
     categoryIsEmpty: false,
     categories: null,
-    editMode: false,
     editWeblog: {
       imgPath: "",
       title: "",
@@ -56,29 +52,8 @@ export class Weblog extends Component {
     this.userInfo =
       localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo");
     this.userInfo = JSON.parse(this.userInfo);
-    if (
-      this.props.location.pathname ===
-      "/weblogs/" + this.props.match.params.id
-    ) {
-      await this.setState({ editMode: true });
+  }
 
-      await userService
-        .findWeblogById(this.props.match.params.id)
-        .then(async (res) => {
-          await this.setState({ editWeblog: res.data });
-          var findCategory = this.state.categories.find(
-            (category) => category._id === res.data.category
-          );
-          await this.setState({ findCategory });
-        })
-        .catch((err) => console.log(err));
-    }
-  }
-  componentWillReceiveProps(newProps) {
-    if (this.props.location.pathname !== newProps.location.pathname) {
-      this.setState({ editMode: false, editWeblog: {} });
-    }
-  }
   fetchCategories() {
     userService
       .fetchCategories()
@@ -87,8 +62,8 @@ export class Weblog extends Component {
   }
   async submitHandler(e) {
     await e.preventDefault();
+    await this.setState({ loading: true });
     await this.validateFrom();
-    console.log(this.state);
     if (this.state.isValid) {
       await this.uploadFile();
 
@@ -104,54 +79,21 @@ export class Weblog extends Component {
           _id: this.userInfo._id,
         },
       };
-      if (!this.state.editMode) {
-        if (!validator.isEmpty(this.state.imgPath)) {
-          userService
-            .createWeblog(weblog)
-            .then((response) => {
-              if (response.status === 200) {
-                this.setState({ enableSave: false });
-                confirmAlert({
-                  customUI: ({ onClose }) => {
-                    return (
-                      <div className="custom-ui text-right ">
-                        <i className="material-icons-outlined">done</i>
-                        <p className="ir-r">مقاله شما با موفقیت ذخیره شد.</p>
-                        <button
-                          className="btn btn-success"
-                          onClick={() => {
-                            onClose();
-                          }}
-                        >
-                          باشه
-                        </button>
-                      </div>
-                    );
-                  },
-                });
-              } else console.log(response.data);
-            })
-            .catch((error) => {
-              console.log(error);
-            })
-            .finally(() => this.setState({ loading: false }));
-        }
-      } else {
-        const weblogId = this.props.match.params.id;
+      if (!validator.isEmpty(this.state.imgPath)) {
         userService
-          .updateWeblog(weblogId, weblog)
+          .createWeblog(weblog)
           .then((response) => {
             if (response.status === 200) {
+              this.setState({ enableSave: false });
               confirmAlert({
                 customUI: ({ onClose }) => {
                   return (
                     <div className="custom-ui text-right ">
                       <i className="material-icons-outlined">done</i>
-                      <p className="ir-r">اطلاعات شما با موفقیت ذخیره شد.</p>
+                      <p className="ir-r">مقاله شما با موفقیت ذخیره شد.</p>
                       <button
                         className="btn btn-success"
                         onClick={() => {
-                          this.setState({ enableSave: false });
                           onClose();
                         }}
                       >
@@ -170,7 +112,9 @@ export class Weblog extends Component {
       }
     } else {
       this.setState({ loading: false, isValid: false });
-      this.scrollTop();
+      if (!this.state.descriptionIsEmpty) {
+        this.scrollTop();
+      }
     }
   }
   handleImageUpload = (e) => {
@@ -197,17 +141,15 @@ export class Weblog extends Component {
     }
   };
   async uploadFile() {
-    if (this.state.img.length > 0) {
-      const uploadData = new FormData();
-      uploadData.append("myFile", this.state.img, this.state.img.name);
-      await userService
-        .uploadWeblogImg(uploadData)
-        .then((res) => this.setState({ imgPath: res.data.path }))
-        .catch((e) => {
-          console.log(e);
-          this.setState({ loading: false });
-        });
-    } else this.setState({ imgError: true });
+    const uploadData = new FormData();
+    uploadData.append("myFile", this.state.img, this.state.img.name);
+    await userService
+      .uploadWeblogImg(uploadData)
+      .then((res) => this.setState({ imgPath: res.data.path }))
+      .catch((e) => {
+        console.log(e);
+        this.setState({ loading: false });
+      });
   }
   async validateFrom() {
     const title = await validator.isEmpty(this.state.title);
@@ -215,48 +157,32 @@ export class Weblog extends Component {
     const littleDes = await validator.isEmpty(this.state.littleDes);
     const category = await validator.isEmpty(this.state.category);
     if (title) {
-      if (this.state.editMode) {
-        this.setState({ title: this.state.editWeblog.title });
-      } else await this.setState({ titleIsEmpty: true, loading: false });
+      await this.setState({ titleIsEmpty: true, loading: false });
     } else await this.setState({ titleIsEmpty: false });
     if (description) {
-      if (this.state.editMode) {
-        this.setState({ description: this.state.editWeblog.description });
-      } else await this.setState({ descriptionIsEmpty: true, loading: false });
+      await this.setState({ descriptionIsEmpty: true, loading: false });
     } else await this.setState({ descriptionIsEmpty: false });
     if (littleDes) {
-      if (this.state.editMode) {
-        this.setState({ littleDes: this.state.editWeblog.littleDes });
-      } else await this.setState({ littleDesIsEmpty: true, loading: false });
+      await this.setState({ littleDesIsEmpty: true, loading: false });
     } else await this.setState({ littleDesIsEmpty: false });
     if (category) {
-      if (this.state.editMode) {
-        this.setState({ category: this.state.editWeblog.category });
-      } else await this.setState({ categoryIsEmpty: true, loading: false });
+      await this.setState({ categoryIsEmpty: true, loading: false });
     } else await this.setState({ categoryIsEmpty: false });
 
     if (this.state.img.length === 0) {
-      if (this.state.editMode) {
-        this.setState({ imgPath: this.state.editWeblog.imgPath });
-      } else await this.setState({ imgError: true, loading: false });
-    } else {
-      if (this.state.editMode) {
-        await this.uploadFile();
-      } else await this.setState({ imgError: false });
-    }
+      await this.setState({ imgError: true, loading: false });
+    } else await this.setState({ imgError: false });
 
     if (
-      !this.state.editMode &&
       !title &&
       !description &&
       !littleDes &&
-      !category
+      !category &&
+      !this.state.imgError
     ) {
       this.setState({ isValid: true });
     } else {
-      if (this.state.editMode) {
-        this.setState({ isValid: true });
-      } else this.setState({ isValid: false, loading: false });
+      this.setState({ isValid: false, loading: false });
     }
   }
 
@@ -309,13 +235,7 @@ export class Weblog extends Component {
                         />
                         <div onClick={() => this.imageUploader.current.click()}>
                           <img
-                            src={
-                              this.state.editMode &&
-                              !validator.isEmpty(this.state.editWeblog.imgPath)
-                                ? API_ADDRESS_SERVICE +
-                                  this.state.editWeblog.imgPath
-                                : "/img/uploadImage.png"
-                            }
+                            src={"/img/uploadImage.png"}
                             ref={this.uploadedImage}
                             className="mx-auto d-block"
                             alt="تصویر"
@@ -326,7 +246,7 @@ export class Weblog extends Component {
                             }}
                           />
                         </div>
-                        {!this.state.editMode && this.state.imgError ? (
+                        {this.state.imgError ? (
                           <div className="mt-3 text-danger text-center">
                             {"انتخاب تصویر اجباری است."}
                           </div>
@@ -351,11 +271,6 @@ export class Weblog extends Component {
                             className="form-control"
                             name="title"
                             onChange={this.changeHandler.bind(this)}
-                            defaultValue={
-                              this.state.editMode
-                                ? this.state.editWeblog.title
-                                : ""
-                            }
                           />
                         </div>
                         {this.state.titleIsEmpty ? (
@@ -378,11 +293,6 @@ export class Weblog extends Component {
                             className="form-control"
                             name="littleDes"
                             onChange={this.changeHandler.bind(this)}
-                            defaultValue={
-                              this.state.editMode
-                                ? this.state.editWeblog.littleDes
-                                : ""
-                            }
                             maxLength="70"
                           />
                         </div>
@@ -409,40 +319,15 @@ export class Weblog extends Component {
                             className="form-control "
                             style={{ position: "relative" }}
                             id="exampleFormControlSelect1"
-                            defaultValue={
-                              this.state.editMode && this.state.findCategory
-                                ? this.state.editWeblog.category
-                                : ""
-                            }
                           >
-                            {this.state.editMode && this.state.findCategory ? (
-                              <option disabled={true}>
-                                {this.state.findCategory.title}
-                              </option>
-                            ) : (
-                              <option value="1">موضوع را انتخاب کنید.</option>
-                            )}
+                            <option value="1">موضوع را انتخاب کنید.</option>
                             {this.state.categories ? (
                               this.state.categories.map((category, index) => {
-                                if (
-                                  this.state.editMode &&
-                                  this.state.findCategory
-                                ) {
-                                  if (
-                                    this.state.findCategory._id !== category._id
-                                  ) {
-                                    return (
-                                      <option value={category._id} key={index}>
-                                        {category.title}
-                                      </option>
-                                    );
-                                  } else return null;
-                                } else
-                                  return (
-                                    <option value={category._id} key={index}>
-                                      {category.title}
-                                    </option>
-                                  );
+                                return (
+                                  <option value={category._id} key={index}>
+                                    {category.title}
+                                  </option>
+                                );
                               })
                             ) : (
                               <option disabled value="2">
@@ -464,11 +349,11 @@ export class Weblog extends Component {
                     <div className="row mt-3">
                       <div className="col-md-12">
                         <Editor
-                          initialValue={
-                            this.state.editMode
-                              ? this.state.editWeblog.description
-                              : ""
-                          }
+                          // initialValue={
+                          //   this.state.editMode
+                          //     ? this.state.editWeblog.description
+                          //     : ""
+                          // }
                           init={{
                             height: 500,
                             menubar: true,
@@ -497,7 +382,7 @@ export class Weblog extends Component {
                       className="btn btn-rose pull-right"
                       disabled={!this.state.enableSave}
                     >
-                      {this.state.loading ? <Loading /> : " ذخیره"}
+                      {this.state.loading ? <Loading size={15} /> : " ذخیره"}
                     </button>
                     <Link to="/dashboard">
                       <button className=" btn btn-mute" type="button">
@@ -513,7 +398,11 @@ export class Weblog extends Component {
         </div>
       </div>
     ) : (
-      <Loading />
+      <div style={{ marginTop: 200 }} className="container">
+        <div className=" d-block mx-auto" style={{ width: 50 }}>
+          <Loading />
+        </div>
+      </div>
     );
   }
 }

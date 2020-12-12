@@ -93,6 +93,7 @@ export class EditWeblog extends Component {
   }
   async submitHandler(e) {
     await e.preventDefault();
+    await this.setState({ loading: true });
     await this.validateFrom();
     if (this.state.isValid) {
       if (!this.state.editMode) {
@@ -163,9 +164,10 @@ export class EditWeblog extends Component {
                         <p className="ir-r">اطلاعات شما با موفقیت ذخیره شد.</p>
                         <button
                           className="btn btn-success"
-                          onClick={() => {
-                            this.setState({ enableSave: false });
-                            onClose();
+                          onClick={async () => {
+                            await this.setState({ enableSave: false });
+                            await onClose();
+                            await this.props.history.push("/weblogs");
                           }}
                         >
                           باشه
@@ -177,8 +179,10 @@ export class EditWeblog extends Component {
               } else console.log(response.data);
             })
             .catch((error) => {
+              this.configError();
               console.log(error);
-            });
+            })
+            .finally(() => this.setState({ loading: false }));
         }
       }
     } else {
@@ -231,34 +235,34 @@ export class EditWeblog extends Component {
         this.setState({
           title: this.state.editWeblog.title,
         });
-      } else await this.setState({ titleIsEmpty: true });
+      } else await this.setState({ titleIsEmpty: true, loading: false });
     } else await this.setState({ titleIsEmpty: false });
     if (description) {
       if (this.state.editMode) {
         this.setState({
           description: this.state.editWeblog.description,
         });
-      } else await this.setState({ descriptionIsEmpty: true });
+      } else await this.setState({ descriptionIsEmpty: true, loading: false });
     } else await this.setState({ descriptionIsEmpty: false });
     if (littleDes) {
       if (this.state.editMode) {
         this.setState({
           littleDes: this.state.editWeblog.littleDes,
         });
-      } else await this.setState({ littleDesIsEmpty: true });
+      } else await this.setState({ littleDesIsEmpty: true, loading: false });
     } else await this.setState({ littleDesIsEmpty: false });
     if (category) {
       if (this.state.editMode) {
         this.setState({
           category: this.state.editWeblog.category,
         });
-      } else await this.setState({ categoryIsEmpty: true });
+      } else await this.setState({ categoryIsEmpty: true, loading: false });
     } else await this.setState({ categoryIsEmpty: false });
 
     if (this.state.img.length === 0) {
       if (this.state.editMode) {
         this.setState({ imgPath: this.state.editWeblog.imgPath });
-      } else await this.setState({ imgError: true });
+      } else await this.setState({ imgError: true, loading: false });
     } else {
       if (this.state.editMode) {
         await this.uploadFile();
@@ -276,7 +280,7 @@ export class EditWeblog extends Component {
     } else {
       if (this.state.editMode) {
         this.setState({ isValid: true });
-      } else this.setState({ isValid: false });
+      } else this.setState({ isValid: false, loading: false });
     }
   }
 
@@ -295,7 +299,28 @@ export class EditWeblog extends Component {
   async selectHandler(e) {
     await this.setState({ category: e.target.value, enableSave: true });
   }
+  configError() {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className="custom-ui text-right text-danger ">
+            <i className="material-icons-outlined">error</i>
 
+            <p className="ir-r">خطا! دوباره امتحان کنید.</p>
+
+            <button
+              className="btn btn-danger"
+              onClick={() => {
+                onClose();
+              }}
+            >
+              باشه
+            </button>
+          </div>
+        );
+      },
+    });
+  }
   render() {
     return this.state.categories ? (
       <div className="content ir-r text-right">
@@ -524,9 +549,9 @@ export class EditWeblog extends Component {
                       className="btn btn-rose pull-right"
                       disabled={!this.state.enableSave}
                     >
-                      {this.state.loading ? <Loading /> : " ذخیره"}
+                      {this.state.loading ? <Loading size={15} /> : " ذخیره"}
                     </button>
-                    <Link to="/dashboard">
+                    <Link to="/weblogs">
                       <button className=" btn btn-mute" type="button">
                         بازگشت
                       </button>
@@ -540,7 +565,11 @@ export class EditWeblog extends Component {
         </div>
       </div>
     ) : (
-      <Loading />
+      <div style={{ marginTop: 200 }} className="container">
+        <div className=" d-block mx-auto" style={{ width: 50 }}>
+          <Loading />
+        </div>
+      </div>
     );
   }
 }

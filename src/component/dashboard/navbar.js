@@ -204,6 +204,8 @@ export class MainNavbar extends Component {
                 ? "مقالات"
                 : this.state.activeSidebar.editWeblog
                 ? "ویرایش مقاله"
+                : this.state.activeSidebar.users
+                ? "مدیریت کاربران"
                 : ""}
             </Link>
           </div>
@@ -211,22 +213,23 @@ export class MainNavbar extends Component {
           <div className="collapse navbar-collapse justify-content-end">
             <ul className="navbar-nav">
               <li className="nav-item">
-                <Link className="nav-link" to="#">
+                <Link className="nav-link" to="/dashboard">
                   <i className="material-icons">dashboard</i>
                   <p className="d-lg-none d-md-block">Stats</p>
                 </Link>
               </li>
               <li className="nav-item dropdown">
-                <a
+                <Link
                   className="nav-link"
                   href="#"
                   id="navbarDropdownMenuLink"
                   data-toggle="dropdown"
-                  aria-haspopup="true"
                   aria-expanded="false"
                 >
                   <i className="material-icons">notifications</i>
-                  {(this.state.newOrder > 0 || this.state.newContact > 0) && (
+                  {(this.state.newOrder > 0 ||
+                    this.state.newContact > 0 ||
+                    this.state.newComments > 0) && (
                     <span className="notification">
                       {this.state.newOrder +
                         this.state.newContact +
@@ -234,7 +237,7 @@ export class MainNavbar extends Component {
                     </span>
                   )}
                   <p className="d-lg-none d-md-block">Some Actions</p>
-                </a>
+                </Link>
                 <div
                   className="dropdown-menu dropdown-menu-left"
                   aria-labelledby="navbarDropdownMenuLink"
@@ -266,17 +269,16 @@ export class MainNavbar extends Component {
                 </div>
               </li>
               <li className="nav-item dropdown">
-                <a
+                <Link
                   className="nav-link"
                   href="#"
                   id="navbarDropdownProfile"
                   data-toggle="dropdown"
-                  aria-haspopup="true"
                   aria-expanded="false"
                 >
                   <i className="material-icons">person</i>
                   <p className="d-lg-none d-md-block">Account</p>
-                </a>
+                </Link>
                 <div
                   className="dropdown-menu dropdown-menu-left"
                   aria-labelledby="navbarDropdownProfile"

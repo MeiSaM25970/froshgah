@@ -8,9 +8,31 @@ export function AlertButton(props) {
     userService
       .deleteOrder(props.orderId)
       .then(() => {
-        window.location.replace("/order");
+        props.history.push("/order");
       })
-      .catch();
+      .catch(() => configError());
+  };
+  const configError = () => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className="custom-ui text-right text-danger ">
+            <i className="material-icons-outlined">error</i>
+
+            <p className="ir-r">خطا! دوباره امتحان کنید.</p>
+
+            <button
+              className="btn btn-danger"
+              onClick={() => {
+                onClose();
+              }}
+            >
+              باشه
+            </button>
+          </div>
+        );
+      },
+    });
   };
   const submit = () => {
     confirmAlert({

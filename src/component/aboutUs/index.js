@@ -5,9 +5,8 @@ import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import { Link } from "react-router-dom";
 import Loading from "../loading";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { API_ADDRESS_SERVICE } from "../../env";
+import { Editor } from "@tinymce/tinymce-react";
 
 export class AboutUs extends Component {
   state = {
@@ -17,9 +16,9 @@ export class AboutUs extends Component {
     titleIsEmpty: false,
     descriptionIsEmpty: false,
     isValid: false,
-    img: [],
     imgError: false,
     edit: false,
+    enableSave: false,
   };
   constructor(props) {
     super(props);
@@ -31,13 +30,14 @@ export class AboutUs extends Component {
     const name = e.target.name;
     const value = e.target.value;
     text[name] = value;
-    this.setState({ ...this.state, ...text });
+    this.setState({ ...this.state, ...text, enableSave: true });
   }
   componentDidMount() {
     userService
       .fetchAbout()
       .then((res) => {
         if (
+          res.data.length > 0 &&
           res.data[0].title &&
           res.data[0].description &&
           res.data[0].imgPath
@@ -49,12 +49,14 @@ export class AboutUs extends Component {
             _id: res.data[0]._id,
             edit: true,
           });
-        }
+        } else this.setState({ new: true });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => console.log(this.state));
   }
   async submitHandler(e) {
     await e.preventDefault();
+    await this.setState({ loading: true });
     await this.validateFrom();
     if (this.state.isValid) {
       const about = {
@@ -90,8 +92,10 @@ export class AboutUs extends Component {
             } else console.log(response.data);
           })
           .catch((error) => {
+            this.configError();
             console.log(error);
-          });
+          })
+          .finally(() => this.setState({ loading: false }));
       } else {
         about._id = this.state._id;
         userService
@@ -121,8 +125,10 @@ export class AboutUs extends Component {
             } else console.log(response.data);
           })
           .catch((error) => {
+            this.configError();
             console.log(error);
-          });
+          })
+          .finally(() => this.setState({ loading: false }));
       }
     } else {
       this.setState({ loading: false, isValid: false });
@@ -130,10 +136,15 @@ export class AboutUs extends Component {
   }
   handleImageUpload = (e) => {
     const file = e.target.files[0];
-    if (!e.target.files.length) {
-      this.setState({ imgError: true });
+    if (!e.target.files.length && !this.state.edit) {
+      this.setState({ imgError: true, loading: false });
     } else {
-      this.setState({ img: file, imgError: false, imageUpload: true });
+      this.setState({
+        img: file,
+        imgError: false,
+        imageUpload: true,
+        enableSave: true,
+      });
     }
 
     if (file) {
@@ -162,30 +173,48 @@ export class AboutUs extends Component {
   async validateFrom() {
     const title = await validator.isEmpty(this.state.title);
     const description = await validator.isEmpty(this.state.description);
-
+    debugger;
     if (title) {
-      await this.setState({ titleIsEmpty: true });
+      await this.setState({ titleIsEmpty: true, loading: false });
     } else await this.setState({ titleIsEmpty: false });
     if (description) {
-      await this.setState({ descriptionIsEmpty: true });
+      await this.setState({ descriptionIsEmpty: true, loading: false });
     } else await this.setState({ descriptionIsEmpty: false });
-    if (!this.state.edit && this.state.img.length === 0) {
-      await this.setState({ imgError: true });
-    } else if (this.state.edit && this.state.img.length > 0) {
+    if (this.state.img) {
       await this.setState({ imgError: false });
       await this.uploadFile();
-    } else if (
-      this.state.edit &&
-      this.state.img.length === 0 &&
-      !validator.isEmpty(this.state.imgPath)
-    ) {
+    } else if (this.state.edit && !validator.isEmpty(this.state.imgPath)) {
       this.setState({ imgError: false });
-    }
-    if (!title && !description && !validator.isEmpty(this.state.imgPath)) {
+    } else this.setState({ imgError: true, loading: false });
+    if (!title && !description && !this.state.imgError) {
       this.setState({ isValid: true });
-    }
+    } else this.setState({ isValid: false, loading: false });
   }
+  handleEditorChange = (content, editor) => {
+    this.setState({ description: content, enableSave: true });
+  };
+  configError() {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className="custom-ui text-right text-danger ">
+            <i className="material-icons-outlined">error</i>
 
+            <p className="ir-r">خطا! دوباره امتحان کنید.</p>
+
+            <button
+              className="btn btn-danger"
+              onClick={() => {
+                onClose();
+              }}
+            >
+              باشه
+            </button>
+          </div>
+        );
+      },
+    });
+  }
   render() {
     return (
       <div className="content ir-r text-right">
@@ -238,7 +267,7 @@ export class AboutUs extends Component {
                             }}
                           />
                         </div>
-                        {this.state.imgError ? (
+                        {!this.state.edit && this.state.imgError ? (
                           <div className="mt-3 text-danger text-center">
                             {"انتخاب تصویر اجباری است."}
                           </div>
@@ -277,13 +306,23 @@ export class AboutUs extends Component {
                     </div>
                     <div className="row mt-3">
                       <div className="col-md-12">
-                        <CKEditor
-                          editor={ClassicEditor}
-                          data={this.state.description}
-                          onChange={(event, editor) => {
-                            const data = editor.getData();
-                            this.setState({ description: data });
+                        <Editor
+                          initialValue={
+                            this.state.description ? this.state.description : ""
+                          }
+                          init={{
+                            height: 500,
+                            menubar: true,
+                            plugins: [
+                              "advlist autolink lists link image charmap print preview anchor",
+                              "searchreplace visualblocks code fullscreen",
+                              "insertdatetime media table paste code help wordcount",
+                            ],
+                            toolbar: `undo redo | formatselect | bold italic backcolor | \
+              alignleft aligncenter alignright alignjustify | \
+              bullist numlist outdent indent | removeformat | help`,
                           }}
+                          onEditorChange={this.handleEditorChange}
                         />
                       </div>
                       {this.state.descriptionIsEmpty ? (
@@ -294,8 +333,12 @@ export class AboutUs extends Component {
                         ""
                       )}
                     </div>
-                    <button type="submit" className="btn btn-rose pull-right">
-                      {this.state.loading ? <Loading /> : " ذخیره"}
+                    <button
+                      type="submit"
+                      className="btn btn-rose pull-right"
+                      disabled={this.state.loading || !this.state.enableSave}
+                    >
+                      {this.state.loading ? <Loading size={15} /> : " ذخیره"}
                     </button>
                     <Link to="/dashboard">
                       <button className=" btn btn-mute" type="button">

@@ -221,7 +221,7 @@ export class MainNavbar extends Component {
               <li className="nav-item dropdown">
                 <Link
                   className="nav-link"
-                  href="#"
+                  to="#"
                   id="navbarDropdownMenuLink"
                   data-toggle="dropdown"
                   aria-expanded="false"
@@ -271,7 +271,7 @@ export class MainNavbar extends Component {
               <li className="nav-item dropdown">
                 <Link
                   className="nav-link"
-                  href="#"
+                  to="#"
                   id="navbarDropdownProfile"
                   data-toggle="dropdown"
                   aria-expanded="false"

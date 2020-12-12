@@ -25,6 +25,7 @@ export class OrderDetail extends Component {
     isValid: false,
     zipCodeTypeErr: false,
     deleteAlert: false,
+    loading: false,
     order: {
       _id: "",
       fullName: "",
@@ -44,6 +45,7 @@ export class OrderDetail extends Component {
   }
   async submitHandler(e) {
     await e.preventDefault();
+    await this.setState({ loading: true });
     await this.validationInput();
     if (this.state.isValid) {
       const id = this.state.order._id;
@@ -72,7 +74,11 @@ export class OrderDetail extends Component {
             },
           });
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          this.configError();
+          console.log(error);
+        })
+        .finally(() => this.setState({ loading: false }));
     }
   }
   async validationInput() {
@@ -121,7 +127,7 @@ export class OrderDetail extends Component {
       !this.state.zipCodeTypeErr
     ) {
       this.setState({ isValid: true });
-    } else this.setState({ isValid: false });
+    } else this.setState({ isValid: false, loading: false });
   }
   changeHandler(e) {
     const order = {};
@@ -156,15 +162,30 @@ export class OrderDetail extends Component {
       cancelOrder: true,
     });
   }
-  deleteOrder() {
-    this.setState({ loading: true });
-    if (this.state.deleteAlert) {
-      userService
-        .deleteOrder(this.state.order._id)
-        .then((res) => this.setState({ deleteOrder: "done", loading: false }));
-    }
-  }
+
   display = "none";
+  configError() {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className="custom-ui text-right text-danger">
+            <i className="material-icons-outlined text-danger">error</i>
+
+            <p className="ir-r">خطا! لطفاً دوباره امتحان کنید.</p>
+
+            <button
+              className="btn btn-danger ir-r"
+              onClick={() => {
+                onClose();
+              }}
+            >
+              باشه
+            </button>
+          </div>
+        );
+      },
+    });
+  }
   render() {
     const date = moment(this.props.order.date, "YYYY/MM/DD HH:mm:ss").format(
       "jYYYY/jM/jD ساعت: HH:mm:ss"
@@ -351,10 +372,6 @@ export class OrderDetail extends Component {
                       <span className="form-control">
                         {this.state.order.price}
                       </span>
-
-                      {/* <span className="bmd-help">
-                        A block of help text that breaks onto a new line.
-                      </span> */}
                     </div>
                   </div>
                 </div>
@@ -730,8 +747,16 @@ export class OrderDetail extends Component {
                 <div className="row mt-5 mb-4">
                   {" "}
                   <div className="col-sm-6 mx-auto">
-                    <button type="submit" className="btn btn-success">
-                      {"ذخیره نهایی"}
+                    <button
+                      type="submit"
+                      className="btn btn-success"
+                      disabled={this.state.loading}
+                    >
+                      {this.state.loading ? (
+                        <Loading size={15} />
+                      ) : (
+                        "ذخیره نهایی"
+                      )}
                     </button>
                     <Link className="btn btn-primary mr-3" to="/order">
                       بازگشت

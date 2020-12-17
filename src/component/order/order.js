@@ -126,6 +126,9 @@ export class Order extends Component {
                                 {contact.status === "deliveryToCustomer" && (
                                   <span className="text-success">تحویل </span>
                                 )}
+                                {contact.status === "fail" && (
+                                  <span className="text-mute">ناموفق </span>
+                                )}
                               </div>
                             ),
                             cellStyle: {

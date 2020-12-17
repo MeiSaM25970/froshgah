@@ -7,7 +7,7 @@ import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import MaterialTable from "material-table";
 
 export class Order extends Component {
-  state = { orders: [], loading: true };
+  state = { orders: [], loading: true, view: false };
   async componentDidMount() {
     await this.fetchData();
   }
@@ -25,7 +25,14 @@ export class Order extends Component {
       })
       .catch(() => window.location.replace("/error"));
   }
-
+  filterNewOrder(view) {
+    if (view === true) {
+      const newOrders = this.state.orders.filter(
+        (order) => order.status === "new"
+      );
+      this.setState({ orders: newOrders });
+    } else this.fetchData();
+  }
   render() {
     return (
       <div className="content text-right">
@@ -54,12 +61,16 @@ export class Order extends Component {
                               width: "20%",
                               textAlign: "center",
                             },
+                            filtering: false,
                           },
                           {
                             title: "نام محصول",
                             field: "productName",
                             cellStyle: {
-                              width: "20%",
+                              maxWidth: 200, // percentage also works
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
                               textAlign: "center",
                             },
                           },
@@ -78,7 +89,7 @@ export class Order extends Component {
                                 {moment(
                                   contact.date,
                                   "YYYY/MM/DD HH:mm:ss"
-                                ).format("jYYYY/jM/jD ساعت HH:mm")}
+                                ).format("jYYYY/jM/jD")}
                               </div>
                             ),
                           },
@@ -90,6 +101,35 @@ export class Order extends Component {
                               whiteSpace: "nowrap",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
+                            },
+                          },
+                          {
+                            title: "وضعیت",
+                            field: "status",
+                            render: (contact) => (
+                              <div>
+                                {contact.status === "new" && (
+                                  <span className="text-danger">جدید</span>
+                                )}
+                                {contact.status === "orderConfirmation" && (
+                                  <span className="text-info">تایید</span>
+                                )}
+                                {contact.status === "orderCancel" && (
+                                  <span className="text-info">لغو</span>
+                                )}
+                                {contact.status === "productPreparation" && (
+                                  <span className="text-info">آماده سازی</span>
+                                )}
+                                {contact.status === "deliveryToThePost" && (
+                                  <span className="text-info">پست</span>
+                                )}
+                                {contact.status === "deliveryToCustomer" && (
+                                  <span className="text-success">تحویل </span>
+                                )}
+                              </div>
+                            ),
+                            cellStyle: {
+                              textAlign: "right",
                             },
                           },
                         ]}
@@ -156,8 +196,20 @@ export class Order extends Component {
                       />
                       <div className="row d-block text-left">
                         <Link
+                          className="btn btn-rose mr-3  mt-4 ir-r "
+                          to="#"
+                          onClick={async () => {
+                            await this.setState({ view: !this.state.view });
+                            await this.filterNewOrder(this.state.view);
+                          }}
+                        >
+                          {!this.state.view
+                            ? "نمایش سفارشات جدید"
+                            : "نمایش همه سفارشات"}
+                        </Link>
+                        <Link
                           className="btn btn-muted mr-3  mt-4 ir-r "
-                          to="/contact"
+                          to="/dashboard"
                         >
                           بازگشت
                         </Link>

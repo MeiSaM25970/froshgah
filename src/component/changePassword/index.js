@@ -17,6 +17,7 @@ export class ChangePassword extends Component {
     configPasswordErr: false,
     isValid: false,
     oldPasswordErr: false,
+    disableButton: true,
   };
 
   changeHandler(e) {
@@ -24,12 +25,12 @@ export class ChangePassword extends Component {
     const name = e.target.name;
     const value = e.target.value;
     password[name] = value;
-    this.setState({ ...this.state, ...password });
+    this.setState({ ...this.state, ...password, disableButton: false });
   }
 
   async submitHandler(e) {
     await e.preventDefault();
-    this.setState({ oldPasswordErr: false });
+    await this.setState({ oldPasswordErr: false });
     await this.validateFrom();
     if (
       !this.state.oldPasswordIsEmpty &&
@@ -69,6 +70,7 @@ export class ChangePassword extends Component {
                   );
                 },
               });
+              this.setState({ disableButton: true });
             } else console.log(response.data);
           })
           .catch((error) => {
@@ -195,7 +197,11 @@ export class ChangePassword extends Component {
                         ""
                       )}
                     </div>
-                    <button type="submit" className="btn btn-rose pull-right">
+                    <button
+                      type="submit"
+                      className="btn btn-rose pull-right"
+                      disabled={this.state.disableButton}
+                    >
                       {this.state.loading ? <Loading /> : " تغییر رمز عبور"}
                     </button>
                     <Link to="/dashboard">

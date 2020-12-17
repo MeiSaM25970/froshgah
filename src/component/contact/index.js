@@ -88,6 +88,7 @@ export class Contact extends Component {
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
+                          textAlign: "center",
                         },
                       },
                       {

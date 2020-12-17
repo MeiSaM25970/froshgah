@@ -35,7 +35,6 @@ export class ContactDetail extends Component {
         style={{
           paddingTop: "75px",
           paddingBottom: "200px",
-          marginTop: "140px",
         }}
       >
         <div className="col-md-12 ir-r">

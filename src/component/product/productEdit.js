@@ -33,6 +33,7 @@ export class ProductEdit extends Component {
     data: {},
     feature: [{ title: "", description: `` }],
     loading: false,
+    disableButton: true,
   };
   dangerClassName = "form-group bmd-form-group has-danger is-focused";
   normalClassName = "form-group bmd-form-group";
@@ -132,7 +133,7 @@ export class ProductEdit extends Component {
     const name = e.target.name;
     const value = e.target.value;
     product[name] = value;
-    this.setState({ ...this.state, ...product });
+    this.setState({ ...this.state, ...product, disableButton: false });
   };
   async uploadFile() {
     const uploadData = new FormData();
@@ -152,7 +153,12 @@ export class ProductEdit extends Component {
     if (!e.target.files.length) {
       this.setState({ imgError: true });
     } else {
-      this.setState({ img: file, imgError: false, imageUpload: true });
+      this.setState({
+        img: file,
+        imgError: false,
+        imageUpload: true,
+        disableButton: false,
+      });
     }
 
     if (file) {
@@ -327,6 +333,7 @@ export class ProductEdit extends Component {
                           onChange={(e) => {
                             let change = e.target.value;
                             item.title = change;
+                            this.setState({ disableButton: false });
                           }}
                         />
                         <label className="des-feature1">شرح: </label>
@@ -340,6 +347,7 @@ export class ProductEdit extends Component {
                           onChange={(e) => {
                             let change = e.target.value;
                             item.description = change;
+                            this.setState({ disableButton: false });
                           }}
                         />
                       </div>
@@ -438,7 +446,7 @@ export class ProductEdit extends Component {
                 <button
                   type="submit"
                   className="btn btn-success mx-auto"
-                  disabled={this.state.loading}
+                  disabled={this.state.loading || this.state.disableButton}
                 >
                   {this.state.loading ? (
                     <Loading size={15} />

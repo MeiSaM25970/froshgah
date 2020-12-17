@@ -614,6 +614,10 @@ export class OrderDetail extends Component {
                           type="radio"
                           name="status"
                           value="orderConfirmation"
+                          checked={
+                            this.state.order.status === "orderConfirmation" &&
+                            true
+                          }
                           onChange={this.changeHandler.bind(this)}
                         />{" "}
                         {"تایید سفارش"}

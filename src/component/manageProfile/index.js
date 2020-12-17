@@ -112,12 +112,23 @@ export class ManageProfile extends Component {
           lastName: this.state.userInfo.lastName,
         },
       });
+    if (!this.state.userInfo.imgPath) {
+      this.setState({
+        newUserInfo: { ...this.state.newUserInfo, imgPath: "" },
+      });
+    } else
+      this.setState({
+        newUserInfo: {
+          ...this.state.newUserInfo,
+          imgPath: this.state.userInfo.imgPath,
+        },
+      });
     this.setState({
       newUserInfo: {
         ...this.state.newUserInfo,
-        _id: this.state.userInfo._id,
-        adminId: this.state.adminInfo._id,
-        imgPath: this.state.userInfo.imgPath,
+        _id: this.state.userInfo._id || "",
+        adminId: this.state.adminInfo._id || "",
+        imgPath: this.state.userInfo.imgPath || "",
         isComplete: true,
       },
     });
@@ -153,6 +164,7 @@ export class ManageProfile extends Component {
               );
             },
           });
+          await this.setState({ disableButton: true });
         });
     } else this.setState({ loading: false, submitErr: true });
   }
@@ -176,13 +188,7 @@ export class ManageProfile extends Component {
       await this.setState({ lastNameISEmptyErr: true, loading: false });
     } else await this.setState({ lastNameISEmptyErr: false });
 
-    if (
-      !emailIsEmpty &&
-      emailType &&
-      !firstNameIsEmpty &&
-      !lastNameIsEmpty &&
-      this.state.newUserInfo.imgPath
-    ) {
+    if (!emailIsEmpty && emailType && !firstNameIsEmpty && !lastNameIsEmpty) {
       await this.setState({
         newUserInfo: { ...this.state.newUserInfo, isComplete: true },
       });

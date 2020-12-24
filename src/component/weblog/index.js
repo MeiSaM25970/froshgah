@@ -93,8 +93,9 @@ export class Weblog extends Component {
                       <p className="ir-r">مقاله شما با موفقیت ذخیره شد.</p>
                       <button
                         className="btn btn-success"
-                        onClick={() => {
-                          onClose();
+                        onClick={async () => {
+                          await onClose();
+                          await this.props.history.push("/weblogs");
                         }}
                       >
                         باشه

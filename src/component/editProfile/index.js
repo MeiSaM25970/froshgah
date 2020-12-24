@@ -180,12 +180,15 @@ export class EditProfile extends Component {
                 <div className="custom-ui text-right ">
                   <i className="material-icons-outlined">done</i>
 
-                  <p className="ir-r">اطلاعات شما با موفقیت ذخیره شد.</p>
+                  <p className="ir-r">
+                    اطلاعات شما با موفقیت ذخیره شد لطفا دوباره وارد شوید.
+                  </p>
 
                   <button
                     className="btn btn-success"
                     onClick={() => {
                       onClose();
+                      this.logout();
                     }}
                   >
                     باشه
@@ -246,7 +249,10 @@ export class EditProfile extends Component {
         newUserInfo: { ...this.state.newUserInfo, isComplete: false },
       });
   }
-
+  async logout() {
+    this.userInfo = localStorage.clear() || sessionStorage.clear();
+    window.location.replace("/login");
+  }
   render() {
     this.fullName =
       this.state.userInfo.firstName + " " + this.state.userInfo.lastName;

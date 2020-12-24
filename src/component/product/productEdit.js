@@ -5,6 +5,9 @@ import * as userService from "../../service";
 import Loading from "../loading";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+import { Link } from "react-router-dom";
+import { productStore } from "./redux/store";
+import { editProduct } from "./redux/actions";
 export class ProductEdit extends Component {
   constructor(props) {
     super(props);
@@ -13,7 +16,6 @@ export class ProductEdit extends Component {
   }
 
   state = {
-    img: [],
     newProduct: "",
     price: "",
     description: ``,
@@ -68,7 +70,7 @@ export class ProductEdit extends Component {
       !this.state.titleError
     ) {
       await this.setState({ isValid: true });
-      if (this.state.img.length > 0) {
+      if (this.state.img) {
         await this.uploadFile();
       }
       const product = {
@@ -94,8 +96,10 @@ export class ProductEdit extends Component {
 
                     <button
                       className="btn btn-success"
-                      onClick={() => {
-                        onClose();
+                      onClick={async () => {
+                        await onClose();
+                        await productStore.dispatch(editProduct(product));
+                        await this.props.history.push("/product");
                       }}
                     >
                       باشه
@@ -457,6 +461,9 @@ export class ProductEdit extends Component {
                     </span>
                   )}
                 </button>
+                <Link to="/product" className="btn btn-mute mx-auto">
+                  بازگشت
+                </Link>
               </div>
             </form>
           </div>

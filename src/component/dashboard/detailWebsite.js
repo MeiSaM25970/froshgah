@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import * as userService from "../../service";
 import numeral from "numeral";
-import ShowCalendar from "../calendar/calendar";
+// import ShowCalendar from "../calendar/calendar";
 
 export class DetailWebsite extends Component {
   state = { successOrder: 0, price: 0, webVisit: 0 };
@@ -86,7 +86,7 @@ export class DetailWebsite extends Component {
         </div>
         <div className="row">
           <div className="col-lg-4 col-md-6 col-sm-6 mx-auto">
-            <ShowCalendar {...this.props} />
+            {/* <ShowCalendar {...this.props} /> */}
           </div>
         </div>
       </Fragment>

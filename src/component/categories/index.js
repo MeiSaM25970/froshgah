@@ -36,22 +36,22 @@ export class Categories extends Component {
       })
       .catch((err) => console.log(err));
   }
-  addCategory() {
+  async addCategory() {
     const category = { title: this.state.title };
-    this.validation();
+    await this.validation();
     if (this.state.isValid) {
-      userService
+      await userService
         .createCategories(category)
         .then(() => {
           this.fetchCategories();
-          this.setState({ addCategory: false });
+          this.setState({ addCategory: false, title: "" });
         })
         .catch((err) => {
           this.configError();
           console.log(err);
         })
         .finally(() => this.setState({ loading: false }));
-    } else this.setState({ loading: false });
+    } else await this.setState({ loading: false });
   }
   componentDidMount() {
     this.fetchCategories();
@@ -134,10 +134,11 @@ export class Categories extends Component {
       behavior: "smooth",
     });
   };
-  submitHandler(e) {
-    e.preventDefault();
-    this.setState({ loading: true });
-    this.addCategory();
+  async submitHandler(e) {
+    await e.preventDefault();
+    await this.setState({ loading: true });
+    await e.target.reset();
+    await this.addCategory();
   }
   configError() {
     confirmAlert({
@@ -346,6 +347,9 @@ export class Categories extends Component {
                     >
                       موضوع جدید
                     </button>
+                    <Link to="/product" className="btn btn-mute mx-auto">
+                      بازگشت
+                    </Link>
                   </div>
                 </div>
               </div>

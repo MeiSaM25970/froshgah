@@ -42,7 +42,7 @@ export class MainNavbar extends Component {
   }
   async logout() {
     this.userInfo = localStorage.clear() || sessionStorage.clear();
-    this.props.history.push("/login");
+    window.location.replace("/login");
   }
   fetchOrder() {
     userService

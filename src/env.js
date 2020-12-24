@@ -1,2 +1,2 @@
-export const API_ADDRESS_SERVICE = "https://api.rezafarajee.ir/";
-export const PUBLIC_FACE = "https://rezafarajee.ir/";
+export const API_ADDRESS_SERVICE = "https://api.hamidrezafaraji.ir/";
+export const PUBLIC_FACE = "https://hamidrezafaraji.ir/";

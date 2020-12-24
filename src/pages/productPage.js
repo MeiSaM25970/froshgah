@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { ProductList } from "../component/product";
 import { MainNavbar } from "../component/dashboard";
-
 export class ProductPage extends Component {
   state = {};
   userInfo =
@@ -11,6 +10,7 @@ export class ProductPage extends Component {
       this.props.history.push("/login");
     }
   }
+
   render() {
     return (
       <Fragment>

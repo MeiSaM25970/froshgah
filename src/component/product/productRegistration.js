@@ -6,6 +6,7 @@ import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import { productStore } from "./redux/store";
 import { addProduct } from "./redux/actions";
 import Loading from "../loading";
+import { Link } from "react-router-dom";
 export class ProductRegistration extends Component {
   constructor(props) {
     super(props);
@@ -433,6 +434,9 @@ export class ProductRegistration extends Component {
                   )}
                   <div className="ripple-container"></div>
                 </button>
+                <Link to="/product" className="btn btn-mute mx-auto">
+                  بازگشت
+                </Link>
               </div>
             </form>
           </div>

@@ -165,7 +165,7 @@ export class Contact extends Component {
                         icon: "email",
                         tooltip: "پاسخ ",
                         onClick: (event, contact) => {
-                          window.open(`mailto:${contact.email}`);
+                          window.open(`https://mailto:${contact.email}`);
                         },
                       },
                     ]}

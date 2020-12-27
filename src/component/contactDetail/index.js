@@ -98,7 +98,7 @@ export class ContactDetail extends Component {
                       to="#"
                       className="btn btn-success  ir-r"
                       onClick={() =>
-                        window.open(`mailto:${this.state.data.email}`)
+                        window.open(`https://mailto:${this.state.data.email}`)
                       }
                     >
                       پاسخ

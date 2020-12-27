@@ -210,22 +210,9 @@ export class CommentDetail extends Component {
                       />
                     </div>
                   </div>
-                  {!this.state.data.answer ? (
-                    <div>
+                  {!this.state.data.answer || this.state.editMode ? (
+                    <div className="gii">
                       <button
-                        to="#"
-                        className="btn btn-success  ir-r"
-                        type="submit"
-                        disabled={validator.isEmpty(this.state.answer)}
-                      >
-                        ارسال پاسخ
-                        <span className="material-icons ">done</span>
-                      </button>
-                    </div>
-                  ) : this.state.editMode ? (
-                    <div>
-                      <button
-                        to="#"
                         className="btn btn-success  ir-r"
                         type="submit"
                         disabled={validator.isEmpty(this.state.answer)}
@@ -236,17 +223,20 @@ export class CommentDetail extends Component {
                     </div>
                   ) : (
                     <div>
-                      <button
-                        className="btn btn-primary ir-r"
-                        onClick={() => {
-                          this.setState({
-                            editMode: true,
-                          });
-                        }}
-                      >
-                        <span className="material-icons">edit</span>
-                        ویرایش پاسخ
-                      </button>
+                      <div>
+                        <button
+                          className="btn btn-primary ir-r"
+                          type="button"
+                          onClick={() => {
+                            this.setState({
+                              editMode: true,
+                            });
+                          }}
+                        >
+                          <span className="material-icons">edit</span>
+                          ویرایش پاسخ
+                        </button>
+                      </div>{" "}
                     </div>
                   )}
                 </div>

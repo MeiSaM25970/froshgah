@@ -33,6 +33,11 @@ import { EditBlogPage } from "./pages/editBlogePage";
 import { UsersPage } from "./pages/usersPage";
 import { ManageProfilePage } from "./pages/manageProfile";
 import { SideBar } from "./component/dashboard";
+import {
+  ManagePagesMain,
+  ManageFooterPage,
+  UploadVideoPage,
+} from "./pages/manages";
 
 class App extends Component {
   state = { data: [], miniSidebar: false };
@@ -103,6 +108,15 @@ class App extends Component {
                 )}
               />
               <Route
+                path="/uploadVideo"
+                exact
+                render={(props) => (
+                  <Page title="آپلود ویدئو">
+                    <UploadVideoPage {...props} />
+                  </Page>
+                )}
+              />
+              <Route
                 path="/comments"
                 exact
                 render={(props) => (
@@ -154,6 +168,24 @@ class App extends Component {
                 render={(props) => (
                   <Page title="ثبت موفق">
                     <SuccessDone {...props} />
+                  </Page>
+                )}
+              />
+              <Route
+                path="/managePages/main"
+                exact
+                render={(props) => (
+                  <Page title="تنظیمات">
+                    <ManagePagesMain {...props} />
+                  </Page>
+                )}
+              />
+              <Route
+                path="/managePages/footer"
+                exact
+                render={(props) => (
+                  <Page title="تنظیمات">
+                    <ManageFooterPage {...props} />
                   </Page>
                 )}
               />

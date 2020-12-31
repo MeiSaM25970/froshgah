@@ -1,18 +1,19 @@
 import React, { Component } from "react";
 import validator from "validator";
-import * as userService from "../../service";
+import * as userService from "../../../service";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import { Link } from "react-router-dom";
-import Loading from "../loading";
-import { API_ADDRESS_SERVICE } from "../../env";
+import Loading from "../../loading";
+import { API_ADDRESS_SERVICE } from "../../../env";
 import { Editor } from "@tinymce/tinymce-react";
 
-export class AboutUs extends Component {
+export class ManageMain extends Component {
   state = {
     imgPath: "",
     title: "",
     description: "",
+    slogan: "",
     titleIsEmpty: false,
     descriptionIsEmpty: false,
     isValid: false,
@@ -34,17 +35,19 @@ export class AboutUs extends Component {
   }
   componentDidMount() {
     userService
-      .fetchAbout()
+      .fetchMainDetail()
       .then((res) => {
         if (
           res.data.length > 0 &&
           res.data[0].title &&
           res.data[0].description &&
+          res.data[0].slogan &&
           res.data[0].imgPath
         ) {
           this.setState({
             title: res.data[0].title,
             description: res.data[0].description,
+            slogan: res.data[0].slogan,
             imgPath: res.data[0].imgPath,
             _id: res.data[0]._id,
             edit: true,
@@ -62,11 +65,12 @@ export class AboutUs extends Component {
       const about = {
         title: this.state.title,
         description: this.state.description,
+        slogan: this.state.slogan,
         imgPath: this.state.imgPath,
       };
       if (!this.state.edit) {
         userService
-          .createAbout(about)
+          .createMainDetail(about)
           .then((response) => {
             if (response.status === 200) {
               confirmAlert({
@@ -99,7 +103,7 @@ export class AboutUs extends Component {
       } else {
         about._id = this.state._id;
         userService
-          .updateAbout(this.state._id, about)
+          .updateMainDetail(this.state._id, about)
           .then((response) => {
             if (response.status === 200) {
               confirmAlert({
@@ -172,6 +176,7 @@ export class AboutUs extends Component {
   }
   async validateFrom() {
     const title = await validator.isEmpty(this.state.title);
+    const slogan = await validator.isEmpty(this.state.slogan);
     const description = await validator.isEmpty(this.state.description);
     if (title) {
       await this.setState({ titleIsEmpty: true, loading: false });
@@ -179,13 +184,16 @@ export class AboutUs extends Component {
     if (description) {
       await this.setState({ descriptionIsEmpty: true, loading: false });
     } else await this.setState({ descriptionIsEmpty: false });
+    if (slogan) {
+      await this.setState({ sloganIsEmpty: true, loading: false });
+    } else this.setState({ sloganIsEmpty: false });
     if (this.state.img) {
       await this.setState({ imgError: false });
       await this.uploadFile();
     } else if (this.state.edit && !validator.isEmpty(this.state.imgPath)) {
       this.setState({ imgError: false });
     } else this.setState({ imgError: true, loading: false });
-    if (!title && !description && !this.state.imgError) {
+    if (!title && !description && !slogan && !this.state.imgError) {
       this.setState({ isValid: true });
     } else this.setState({ isValid: false, loading: false });
   }
@@ -223,9 +231,9 @@ export class AboutUs extends Component {
               <div className="card">
                 <div className="card-header card-header-icon card-header-primary">
                   <div className="card-icon">
-                    <i className="material-icons">info</i>
+                    <i className="material-icons">person</i>
                   </div>
-                  <h4 className="card-title ir-r">درباره ما</h4>
+                  <h4 className="card-title ir-r">تنظیمات</h4>
                 </div>
                 <div className="card-body">
                   <form onSubmit={this.submitHandler.bind(this)}>
@@ -303,6 +311,31 @@ export class AboutUs extends Component {
                         )}
                       </div>
                     </div>
+                    <div className="row">
+                      <div className="col-md-12 mt-auto">
+                        <div className="form-group bmd-form-group">
+                          <label className="bmd-label-floating">
+                            متن شعار:
+                          </label>
+                          <textarea
+                            rows="1"
+                            type="text"
+                            className="form-control"
+                            name="slogan"
+                            onChange={this.changeHandler.bind(this)}
+                            defaultValue={this.state.slogan}
+                          />
+                        </div>
+                        {this.state.sloganIsEmpty ? (
+                          <small className="d-block text-danger text-center">
+                            وارد نمودن متن شعار اجباری است.
+                          </small>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </div>
+
                     <div className="row mt-3">
                       <div className="col-md-12">
                         <Editor

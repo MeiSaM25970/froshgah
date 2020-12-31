@@ -440,3 +440,98 @@ export async function findByUserName(username) {
     : undefined;
   return axios.get(API_ADDRESS_SERVICE + "auth/" + username, headers);
 }
+// manage pages
+export function fetchMainDetail() {
+  return axios.get(API_ADDRESS_SERVICE + "managePages/main");
+}
+export async function createMainDetail(detail) {
+  await userInfo();
+
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.post(API_ADDRESS_SERVICE + "managePages/main", detail, headers);
+}
+export async function updateMainDetail(id, detail) {
+  await userInfo();
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.post(
+    API_ADDRESS_SERVICE + "managePages/main/" + id,
+    detail,
+    headers
+  );
+}
+export function fetchFooterDetail() {
+  return axios.get(API_ADDRESS_SERVICE + "managePages/footer");
+}
+export async function createFooterDetail(detail) {
+  await userInfo();
+
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.post(
+    API_ADDRESS_SERVICE + "managePages/footer",
+    detail,
+    headers
+  );
+}
+export async function updateFooterDetail(id, detail) {
+  await userInfo();
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.post(
+    API_ADDRESS_SERVICE + "managePages/footer/" + id,
+    detail,
+    headers
+  );
+}
+export async function uploadVideo(video) {
+  await userInfo();
+
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.post(API_ADDRESS_SERVICE + "managePages/video", video, headers);
+}
+export async function deleteVideo(videoName, id) {
+  await userInfo();
+
+  var headers = JWT
+    ? {
+        headers: {
+          Authorization: "Bearer " + JWT.token,
+        },
+      }
+    : undefined;
+  return axios.delete(
+    API_ADDRESS_SERVICE + "managePages/video/" + videoName + "?id=" + id,
+    headers
+  );
+}
+export function fetchVideos() {
+  return axios.get(API_ADDRESS_SERVICE + "managePages/video");
+}

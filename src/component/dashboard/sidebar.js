@@ -25,6 +25,9 @@ export class SideBar extends Component {
       weblogs: false,
       editWeblog: false,
       users: false,
+      managePages: false,
+      manageFooter: false,
+      manageContactText: false,
     },
   };
   userInfo =
@@ -388,6 +391,100 @@ export class SideBar extends Component {
                       }
                     >
                       <span className="sidebar-normal"> مقالات </span>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li
+              className={
+                this.state.activeSidebar.categories ||
+                this.state.activeSidebar.newBlog ||
+                this.state.activeSidebar.weblogs ||
+                this.state.activeSidebar.editWeblog
+                  ? "nav-item active"
+                  : "nav-item"
+              }
+            >
+              {" "}
+              <a
+                className="nav-link collapsed"
+                data-toggle="collapse"
+                href="#managePages"
+                aria-expanded={
+                  this.state.activeSidebar.managePages ||
+                  this.state.activeSidebar.manageFooter ||
+                  this.state.activeSidebar.uploadVideo
+                }
+              >
+                <i className="material-icons">pages </i>
+                <p>
+                  {" "}
+                  مدیریت صفحات
+                  <b className="caret"></b>
+                </p>
+              </a>
+              <div
+                className={
+                  this.state.activeSidebar.managePages ||
+                  this.state.activeSidebar.manageFooter ||
+                  this.state.activeSidebar.uploadVideo
+                    ? "collapse show"
+                    : "collapse"
+                }
+                id="managePages"
+              >
+                <ul className="nav">
+                  <li
+                    className={
+                      this.state.activeSidebar.managePages
+                        ? "nav-item active"
+                        : "nav-item"
+                    }
+                  >
+                    <Link
+                      className="nav-link"
+                      to="/managePages/main"
+                      onClick={() =>
+                        this.setState({ activeSidebar: { managePages: true } })
+                      }
+                    >
+                      <span className="sidebar-normal"> صفحه اصلی </span>
+                    </Link>
+                  </li>
+                  <li
+                    className={
+                      this.state.activeSidebar.manageFooter
+                        ? "nav-item active"
+                        : "nav-item"
+                    }
+                  >
+                    <Link
+                      className="nav-link"
+                      to="/managePages/footer"
+                      onClick={() =>
+                        this.setState({ activeSidebar: { manageFooter: true } })
+                      }
+                    >
+                      <span className="sidebar-normal"> پاورقی و تماس</span>
+                    </Link>
+                  </li>
+
+                  <li
+                    className={
+                      this.state.activeSidebar.uploadVideo
+                        ? "nav-item active"
+                        : "nav-item"
+                    }
+                  >
+                    <Link
+                      className="nav-link"
+                      to="/uploadVideo"
+                      onClick={() =>
+                        this.setState({ activeSidebar: { uploadVideo: true } })
+                      }
+                    >
+                      <span className="sidebar-normal"> آپلود ویدئو</span>
                     </Link>
                   </li>
                 </ul>
